@@ -452,8 +452,75 @@ function renderProgramEditor() {
 
   html += `<button class="big-action danger-ghost" id="reset-day">Réinitialiser ce jour (programme d'origine)</button>`;
 
+  html += `
+    <div class="section-label">Données</div>
+    <button class="big-action" id="export-json">⬇ Exporter les données (JSON)</button>
+    <button class="big-action" id="import-json">⬆ Importer des données (JSON)</button>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
+    <p class="data-hint">L'export contient le programme et tout l'historique.
+    L'import remplace les données actuelles.</p>`;
+
   app.innerHTML = html;
   bindEditorEvents();
+  bindDataEvents();
+}
+
+// ---------- Export / import JSON ----------
+function bindDataEvents() {
+  document.getElementById("export-json").addEventListener("click", exportJSON);
+  const fileInput = document.getElementById("import-file");
+  document.getElementById("import-json").addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (file) importJSON(file);
+    fileInput.value = "";
+  });
+}
+
+function exportJSON() {
+  const data = {
+    app: "sport-session-tracker",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    program: program,
+    sessions: sessions,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `sport-tracker-${todayKey()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try {
+      data = JSON.parse(reader.result);
+    } catch (e) {
+      alert("Fichier illisible : ce n'est pas du JSON valide.");
+      return;
+    }
+    const hasProgram = data.program && data.program.daily && data.program.days;
+    const hasSessions = data.sessions && typeof data.sessions === "object";
+    if (!hasProgram && !hasSessions) {
+      alert("Ce fichier ne contient ni programme ni sessions reconnus.");
+      return;
+    }
+    const parts = [hasProgram ? "le programme" : null, hasSessions ? "l'historique" : null].filter(Boolean).join(" et ");
+    if (!confirm(`Importer ${parts} ? Les données actuelles seront remplacées.`)) return;
+    if (hasProgram) { program = data.program; saveProgram(); }
+    if (hasSessions) { sessions = data.sessions; saveSessions(); }
+    editingExoId = null;
+    render();
+    alert("Import réussi ✓");
+  };
+  reader.onerror = () => alert("Impossible de lire le fichier.");
+  reader.readAsText(file);
 }
 
 function exoEditForm(exo, isNew) {

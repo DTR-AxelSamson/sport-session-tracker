@@ -44,7 +44,10 @@ grandes zones tactiles, saisie < 15 s.
       exercices, % et barre, dépliable pour voir le détail ✓/○ par exercice.
       Basé sur le snapshot `planned` de chaque session ; les sessions vides
       (aucune coche) sont masquées.
-- [ ] Export / import JSON.
+- [x] Export / import JSON dans l'onglet Programme : export = fichier
+      `sport-tracker-YYYY-MM-DD.json` (programme + sessions + métadonnées),
+      import via sélecteur de fichier avec validation, confirmation et
+      remplacement des données.
 
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.

@@ -342,6 +342,13 @@ body {
 
 .hist-exo.done { color: var(--text); }
 
+.data-hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 4px 6px 20px;
+  line-height: 1.5;
+}
+
 .empty {
   text-align: center;
   color: var(--muted);
