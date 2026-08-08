@@ -86,6 +86,17 @@ grandes zones tactiles, saisie < 15 s.
       édition d'une durée de planche, export v2, réimport, import d'un ancien
       export v1 converti automatiquement.
 
+- [x] Section quotidienne réintroduite (`program.daily`, commune aux 3 blocs) :
+      gainage 1 min matin + 1 min soir avec timer 60 s. Affichée en tête de la
+      Séance sous « Chaque jour », éditable via la puce « Quotidien » de
+      l'onglet Programme, incluse dans le snapshot d'historique. Migration
+      automatique des programmes v2 stockés sans `daily` ; import v1 mappe son
+      ancien `daily` sur la nouvelle section. Cache SW bumpé `sst-v3`.
+- [x] Bugfix : `program` référençait `DEFAULT_PROGRAM` au premier lancement
+      (avant toute sauvegarde) → éditer mutait le programme d'origine et
+      « Réinitialiser » restaurait la version modifiée. Corrigé par un
+      `structuredClone` du défaut au chargement.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).

@@ -14,6 +14,14 @@ const PAIR_HINT = "Enchaîne par paires pour gagner du temps : A1 + A2 en altern
 
 const DEFAULT_PROGRAM = {
   activeBlock: "1",
+  // Affiché chaque jour, quel que soit le bloc actif.
+  daily: {
+    title: "Chaque jour",
+    exercises: [
+      { id: "dg1", name: "Gainage 1 min — matin", duration: 60, note: "planche, bassin neutre, tu respires" },
+      { id: "dg2", name: "Gainage 1 min — soir", duration: 60, note: "planche, bassin neutre, tu respires" },
+    ],
+  },
   blocks: {
     "1": {
       name: "Bloc 1 — Fondations (sem. 1–4)",
@@ -218,8 +226,17 @@ function loadJSON(key, fallback) {
   }
 }
 
-let program = loadJSON(LS_PROGRAM, DEFAULT_PROGRAM);
+// Clone profond du défaut : sans ça, éditer le programme mutait DEFAULT_PROGRAM
+// lui-même et « Réinitialiser ce jour » restaurait la version modifiée.
+let program = loadJSON(LS_PROGRAM, null) || structuredClone(DEFAULT_PROGRAM);
 let sessions = loadJSON(LS_SESSIONS, {});
+
+// Migration : les programmes v2 stockés avant l'ajout de la section
+// quotidienne n'ont pas de champ daily.
+if (!program.daily) {
+  program.daily = structuredClone(DEFAULT_PROGRAM.daily);
+  saveProgram();
+}
 
 function saveProgram() { localStorage.setItem(LS_PROGRAM, JSON.stringify(program)); }
 function saveSessions() { localStorage.setItem(LS_SESSIONS, JSON.stringify(sessions)); }
@@ -242,7 +259,7 @@ function getSession(dateKey) {
       checked: {},
       names: {},
       title: day.title + " · Bloc " + program.activeBlock,
-      planned: day.exercises.map((e) => ({ id: e.id, name: e.name })),
+      planned: [...program.daily.exercises, ...day.exercises].map((e) => ({ id: e.id, name: e.name })),
     };
   }
   return sessions[dateKey];
@@ -299,7 +316,8 @@ function renderToday() {
   daySubtitle.textContent = now.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
     + (activeBlock().name ? " · " + activeBlock().name : "");
 
-  const all = day.exercises;
+  const daily = program.daily.exercises;
+  const all = [...daily, ...day.exercises];
   const doneCount = all.filter((e) => session.checked[e.id]).length;
 
   let html = `
@@ -308,8 +326,15 @@ function renderToday() {
       <div class="progress-bar"><div style="width:${all.length ? (100 * doneCount) / all.length : 0}%"></div></div>
     </div>`;
 
-  if (day.hint) html += `<p class="day-hint">${escapeHtml(day.hint)}</p>`;
-  html += all.map((e) => exoCard(e, session)).join("");
+  if (daily.length) {
+    html += `<div class="section-label">${escapeHtml(program.daily.title || "Chaque jour")}</div>`;
+    html += daily.map((e) => exoCard(e, session)).join("");
+  }
+  if (day.exercises.length) {
+    html += `<div class="section-label">${escapeHtml(day.title || "Séance du jour")}</div>`;
+    if (day.hint) html += `<p class="day-hint">${escapeHtml(day.hint)}</p>`;
+    html += day.exercises.map((e) => exoCard(e, session)).join("");
+  }
   if (!all.length) html += `<div class="empty">Rien de prévu aujourd'hui.<br>Tu peux ajouter des exercices dans l'onglet Programme.</div>`;
 
   app.innerHTML = html;
@@ -540,6 +565,10 @@ let editingExoId = null; // id de l'exercice en cours d'édition, ou "new"
 const DAY_SHORT = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
 
 function editedDay() {
+  if (editDay === "daily") {
+    if (!program.daily) program.daily = { title: "Chaque jour", exercises: [] };
+    return program.daily;
+  }
   const days = activeBlock().days;
   if (!days[editDay]) days[editDay] = { title: "", exercises: [] };
   return days[editDay];
@@ -568,10 +597,13 @@ function renderProgramEditor() {
   if (block.gate) html += `<p class="data-hint">${escapeHtml(block.gate)}</p>`;
 
   html += `<div class="day-chips">`;
+  html += `<button class="chip ${editDay === "daily" ? "active" : ""}" data-day="daily">Quotidien</button>`;
   for (const i of [1, 2, 3, 4, 5, 6, 0]) {
     html += `<button class="chip ${editDay === i ? "active" : ""}" data-day="${i}">${DAY_SHORT[i]}</button>`;
   }
   html += `</div>`;
+
+  if (editDay === "daily") html += `<p class="data-hint">Ces exercices s'affichent chaque jour, quel que soit le bloc.</p>`;
 
   html += `<input class="day-title-input" id="day-title-input" value="${escapeAttr(dayObj.title)}"
              placeholder="Titre du jour">`;
@@ -639,20 +671,20 @@ function exportJSON() {
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 
-// Accepte le format courant (blocs) et l'ancien format v1 (daily + days),
-// converti en un bloc unique avec la base quotidienne intégrée à chaque jour.
+// Accepte le format courant (blocs + daily) et l'ancien format v1
+// (daily + days), converti en un bloc unique.
 function normalizeProgram(p) {
   if (!p || typeof p !== "object") return null;
-  if (p.blocks && p.activeBlock && p.blocks[p.activeBlock]) return p;
+  if (p.blocks && p.activeBlock && p.blocks[p.activeBlock]) {
+    if (!p.daily) p.daily = structuredClone(DEFAULT_PROGRAM.daily);
+    return p;
+  }
   if (p.daily && p.days) {
-    const days = {};
-    for (const k of Object.keys(p.days)) {
-      days[k] = {
-        title: p.days[k].title || "",
-        exercises: [...(p.daily.exercises || []), ...(p.days[k].exercises || [])],
-      };
-    }
-    return { activeBlock: "1", blocks: { "1": { name: "Programme importé (ancien format)", days } } };
+    return {
+      activeBlock: "1",
+      daily: p.daily,
+      blocks: { "1": { name: "Programme importé (ancien format)", days: p.days } },
+    };
   }
   return null;
 }
@@ -742,7 +774,7 @@ function bindEditorEvents() {
 
   app.querySelectorAll(".chip[data-day]").forEach((c) => {
     c.addEventListener("click", () => {
-      editDay = parseInt(c.dataset.day, 10);
+      editDay = c.dataset.day === "daily" ? "daily" : parseInt(c.dataset.day, 10);
       editingExoId = null;
       render();
     });
@@ -782,13 +814,18 @@ function bindEditorEvents() {
 
   const resetBtn = document.getElementById("reset-day");
   if (resetBtn) resetBtn.addEventListener("click", () => {
-    const defBlock = DEFAULT_PROGRAM.blocks[program.activeBlock];
-    if (!defBlock || !defBlock.days[editDay]) {
-      alert("Pas de version d'origine pour ce jour dans ce bloc.");
-      return;
+    if (editDay === "daily") {
+      if (!confirm("Réinitialiser la section quotidienne avec le programme d'origine ?")) return;
+      program.daily = structuredClone(DEFAULT_PROGRAM.daily);
+    } else {
+      const defBlock = DEFAULT_PROGRAM.blocks[program.activeBlock];
+      if (!defBlock || !defBlock.days[editDay]) {
+        alert("Pas de version d'origine pour ce jour dans ce bloc.");
+        return;
+      }
+      if (!confirm(`Réinitialiser ${DAY_NAMES[editDay]} (bloc ${program.activeBlock}) avec le programme d'origine ?`)) return;
+      activeBlock().days[editDay] = structuredClone(defBlock.days[editDay]);
     }
-    if (!confirm(`Réinitialiser ${DAY_NAMES[editDay]} (bloc ${program.activeBlock}) avec le programme d'origine ?`)) return;
-    activeBlock().days[editDay] = structuredClone(defBlock.days[editDay]);
     editingExoId = null;
     saveProgram();
     render();
