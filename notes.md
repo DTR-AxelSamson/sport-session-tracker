@@ -40,7 +40,10 @@ grandes zones tactiles, saisie < 15 s.
       jour éditable, formulaire par exercice (nom, séries, répétitions libres,
       timer min/s, par côté/jambe/bras, note), ajout, suppression, réordonnancement
       (↑/↓), réinitialisation d'un jour au programme d'origine.
-- [ ] Historique des sessions passées.
+- [x] Historique : cartes par date (plus récent en haut), titre du jour, x/y
+      exercices, % et barre, dépliable pour voir le détail ✓/○ par exercice.
+      Basé sur le snapshot `planned` de chaque session ; les sessions vides
+      (aucune coche) sont masquées.
 - [ ] Export / import JSON.
 
 ## À garder en tête

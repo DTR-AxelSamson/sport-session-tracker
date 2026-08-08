@@ -342,10 +342,66 @@ function toggleExo(id, name) {
   render();
 }
 
+// ---------- Historique ----------
+let expandedDates = new Set();
+
 function renderHistory() {
   dayTitle.textContent = "Historique";
   daySubtitle.textContent = "";
-  app.innerHTML = `<div class="empty">Bientôt : la liste de tes précédentes sessions.</div>`;
+
+  const tKey = todayKey();
+  const dates = Object.keys(sessions)
+    .filter((k) => Object.keys(sessions[k].checked || {}).length > 0)
+    .sort()
+    .reverse();
+
+  if (!dates.length) {
+    app.innerHTML = `<div class="empty">Aucune session enregistrée pour l'instant.<br>Coche des exercices dans l'onglet Séance !</div>`;
+    return;
+  }
+
+  app.innerHTML = dates.map((key) => {
+    const s = sessions[key];
+    const doneCount = Object.keys(s.checked).length;
+    const planned = s.planned || Object.keys(s.names || {}).map((id) => ({ id, name: s.names[id] }));
+    const total = Math.max(planned.length, doneCount);
+    const d = new Date(key + "T12:00:00");
+    const label = key === tKey
+      ? "Aujourd'hui"
+      : d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+    const pct = total ? Math.round((100 * doneCount) / total) : 0;
+    const open = expandedDates.has(key);
+
+    let detail = "";
+    if (open) {
+      detail = `<div class="hist-detail">` + planned.map((p) => {
+        const done = !!s.checked[p.id];
+        return `<div class="hist-exo ${done ? "done" : ""}">${done ? "✓" : "○"} ${escapeHtml(p.name)}</div>`;
+      }).join("") + `</div>`;
+    }
+
+    return `
+      <div class="hist-card ${pct === 100 ? "complete" : ""}" data-date="${key}">
+        <div class="hist-head">
+          <div class="hist-main">
+            <div class="name">${label}${s.title ? ` — ${escapeHtml(s.title)}` : ""}</div>
+            <div class="meta">${doneCount} / ${total} exercices</div>
+          </div>
+          <div class="hist-pct">${pct === 100 ? "✓" : pct + "%"}</div>
+        </div>
+        <div class="progress-bar"><div style="width:${pct}%"></div></div>
+        ${detail}
+      </div>`;
+  }).join("");
+
+  app.querySelectorAll(".hist-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const key = card.dataset.date;
+      if (expandedDates.has(key)) expandedDates.delete(key);
+      else expandedDates.add(key);
+      render();
+    });
+  });
 }
 
 // ---------- Éditeur de programme ----------

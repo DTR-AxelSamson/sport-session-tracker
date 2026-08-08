@@ -297,6 +297,51 @@ body {
 
 .form-actions { display: flex; gap: 10px; margin-top: 4px; }
 
+/* Historique */
+.hist-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.hist-card.complete { border-color: #2b4a35; }
+
+.hist-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.hist-main { flex: 1; min-width: 0; }
+.hist-main .name { font-weight: 600; text-transform: capitalize; }
+.hist-main .meta { color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+
+.hist-pct {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.hist-card.complete .hist-pct { color: var(--green); }
+
+.hist-detail {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.hist-exo {
+  padding: 8px 4px;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.hist-exo.done { color: var(--text); }
+
 .empty {
   text-align: center;
   color: var(--muted);
