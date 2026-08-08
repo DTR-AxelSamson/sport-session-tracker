@@ -31,7 +31,11 @@ grandes zones tactiles, saisie < 15 s.
 ## Avancement
 - [x] v1 : vue du jour (base quotidienne + séance du jour), coches persistées en
       localStorage, barre de progression, tabbar 3 onglets.
-- [ ] Timers (compte à rebours, modifiables) sur les exercices avec durée.
+- [x] Timers : bouton ⏱ sur les exercices avec durée, panneau intégré à la carte
+      (gros chiffres, Démarrer/Pause, ±15 s, « Encore » à zéro), vibration + triple
+      bip (WebAudio) à la fin. Un seul timer actif à la fois.
+- [x] Snapshot du plan du jour dans la session (`planned` + `title`) pour que
+      l'historique reste correct après modification du programme.
 - [ ] Édition du programme à la maille jour (ajout/suppression/modif d'exercices).
 - [ ] Historique des sessions passées.
 - [ ] Export / import JSON.

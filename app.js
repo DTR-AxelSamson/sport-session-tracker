@@ -106,7 +106,18 @@ function todayKey() {
 }
 
 function getSession(dateKey) {
-  if (!sessions[dateKey]) sessions[dateKey] = { checked: {}, names: {} };
+  if (!sessions[dateKey]) {
+    // Snapshot du plan du jour : l'historique reste juste même si le
+    // programme est modifié plus tard.
+    const d = new Date(dateKey + "T12:00:00");
+    const { daily, specific, title } = exercisesForDay(d.getDay());
+    sessions[dateKey] = {
+      checked: {},
+      names: {},
+      title: title,
+      planned: [...daily, ...specific].map((e) => ({ id: e.id, name: e.name })),
+    };
+  }
   return sessions[dateKey];
 }
 
@@ -181,19 +192,141 @@ function renderToday() {
   app.querySelectorAll(".exo").forEach((el) => {
     el.addEventListener("click", () => toggleExo(el.dataset.id, el.dataset.name));
   });
+  bindTimerControls();
 }
 
 function exoCard(exo, session) {
   const done = !!session.checked[exo.id];
   const meta = metaText(exo);
+  const hasTimer = !!exo.duration;
+  const isOpen = timer && timer.exoId === exo.id;
   return `
     <div class="exo ${done ? "done" : ""}" data-id="${exo.id}" data-name="${escapeAttr(exo.name)}">
-      <div class="check">✓</div>
-      <div class="info">
-        <div class="name">${escapeHtml(exo.name)}</div>
-        ${meta ? `<div class="meta">${meta}</div>` : ""}
+      <div class="row">
+        <div class="check">✓</div>
+        <div class="info">
+          <div class="name">${escapeHtml(exo.name)}</div>
+          ${meta ? `<div class="meta">${meta}</div>` : ""}
+        </div>
+        ${hasTimer ? `<button class="timer-chip ${isOpen ? "open" : ""}" data-timer="${exo.id}" data-duration="${exo.duration}">⏱</button>` : ""}
       </div>
+      ${isOpen ? timerPanel() : ""}
     </div>`;
+}
+
+// ---------- Timer ----------
+let timer = null; // { exoId, remaining, total, running }
+let timerInterval = null;
+
+function timerPanel() {
+  return `
+    <div class="timer-panel">
+      <div class="timer-digits ${timer.remaining === 0 ? "finished" : ""}">${fmtClock(timer.remaining)}</div>
+      <div class="timer-controls">
+        <button class="tbtn small" data-taction="minus">−15 s</button>
+        <button class="tbtn main" data-taction="startpause">${timer.running ? "Pause" : (timer.remaining === 0 ? "Encore" : "Démarrer")}</button>
+        <button class="tbtn small" data-taction="plus">+15 s</button>
+      </div>
+      <button class="tbtn ghost" data-taction="close">Fermer</button>
+    </div>`;
+}
+
+function fmtClock(sec) {
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function bindTimerControls() {
+  app.querySelectorAll(".timer-chip").forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const id = btn.dataset.timer;
+      if (timer && timer.exoId === id) closeTimer();
+      else openTimer(id, parseInt(btn.dataset.duration, 10));
+    });
+  });
+  app.querySelectorAll("[data-taction]").forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      timerAction(btn.dataset.taction);
+    });
+  });
+}
+
+function openTimer(exoId, duration) {
+  stopTicking();
+  timer = { exoId, remaining: duration, total: duration, running: false };
+  render();
+}
+
+function closeTimer() {
+  stopTicking();
+  timer = null;
+  render();
+}
+
+function timerAction(action) {
+  if (!timer) return;
+  if (action === "close") return closeTimer();
+  if (action === "minus") timer.remaining = Math.max(0, timer.remaining - 15);
+  if (action === "plus") timer.remaining += 15;
+  if (action === "startpause") {
+    if (timer.running) {
+      stopTicking();
+      timer.running = false;
+    } else {
+      if (timer.remaining === 0) timer.remaining = timer.total; // "Encore"
+      timer.running = true;
+      startTicking();
+    }
+  }
+  updateTimerDisplay();
+}
+
+function startTicking() {
+  stopTicking();
+  timerInterval = setInterval(() => {
+    if (!timer || !timer.running) return;
+    timer.remaining -= 1;
+    if (timer.remaining <= 0) {
+      timer.remaining = 0;
+      timer.running = false;
+      stopTicking();
+      ringBell();
+    }
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function stopTicking() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function updateTimerDisplay() {
+  const digits = app.querySelector(".timer-digits");
+  if (!digits) return;
+  digits.textContent = fmtClock(timer.remaining);
+  digits.classList.toggle("finished", timer.remaining === 0);
+  const main = app.querySelector('[data-taction="startpause"]');
+  if (main) main.textContent = timer.running ? "Pause" : (timer.remaining === 0 ? "Encore" : "Démarrer");
+}
+
+function ringBell() {
+  if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 500]);
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.35, 0.7].forEach((t) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.4, ctx.currentTime + t);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.3);
+      osc.start(ctx.currentTime + t);
+      osc.stop(ctx.currentTime + t + 0.3);
+    });
+  } catch (e) { /* audio indisponible : la vibration suffit */ }
 }
 
 function toggleExo(id, name) {
