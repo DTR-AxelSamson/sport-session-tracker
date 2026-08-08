@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#10131a">
+  <title>Sport Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sport">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="header">
+    <h1 id="day-title">Aujourd'hui</h1>
+    <p id="day-subtitle"></p>
+  </header>
+
+  <main id="app"></main>
+
+  <nav id="tabbar">
+    <button class="tab active" data-tab="today">Séance</button>
+    <button class="tab" data-tab="history">Historique</button>
+    <button class="tab" data-tab="program">Programme</button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
