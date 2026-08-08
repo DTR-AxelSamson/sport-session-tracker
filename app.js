@@ -251,6 +251,10 @@ function bindTimerControls() {
       timerAction(btn.dataset.taction);
     });
   });
+  // Un tap sur le fond du panneau ne doit pas cocher/décocher la carte
+  app.querySelectorAll(".timer-panel").forEach((panel) => {
+    panel.addEventListener("click", (ev) => ev.stopPropagation());
+  });
 }
 
 function openTimer(exoId, duration) {

@@ -49,6 +49,14 @@ grandes zones tactiles, saisie < 15 s.
       import via sélecteur de fichier avec validation, confirmation et
       remplacement des données.
 
+- [x] Correctif : `stopPropagation` sur le fond du panneau timer (un tap sur le
+      panneau cochait/décochait la carte par accident).
+- [x] README réécrit (fonctionnalités + structure des fichiers).
+- [x] Test de bout en bout Playwright (hors repo, dans le scratchpad) : coches +
+      persistance après reload, timer (démarrage, décompte, ±15 s), historique
+      dépliable, ajout/édition/suppression d'exercice, modification de la durée
+      d'un timer, export puis réimport JSON. Tout passe, zéro erreur console.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).
