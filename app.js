@@ -212,10 +212,176 @@ const DEFAULT_PROGRAM = {
   },
 };
 
+// ---------- Plan course : 10 km sub-50 en 12 semaines ----------
+// Chaque semaine : 3 séances (mardi qualité, jeudi EF, dimanche sortie longue).
+// Étape : { name, duration? (=> timer), sets?, reps?, note? }.
+// Le suivi des coches est indépendant des dates (clé semaine-séance-étape),
+// pour pouvoir décaler une séance sans perdre le fil.
+
+const WARMUP = { name: "Échauffement 15′ EF + 3–4 lignes droites", duration: 900 };
+const COOLDOWN = { name: "Retour au calme 10′", duration: 600 };
+const STRIDES = { name: "6 lignes droites de 80 m" };
+
+const COURSE_PLAN = {
+  goal: "Objectif : 49:50 · 4:59/km de moyenne",
+  paces: [
+    { zone: "EF — endurance fondamentale", pace: "6:15 – 6:35 /km", feel: "conversation facile, 140–152 bpm" },
+    { zone: "Seuil — allure semi", pace: "5:15 – 5:25 /km", feel: "soutenu mais contrôlé, ~172–178 bpm" },
+    { zone: "Allure 10 km cible", pace: "4:55 – 5:00 /km", feel: "dur, phrases courtes seulement" },
+    { zone: "VMA longue — 800 à 1200 m", pace: "4:35 – 4:45 /km", feel: "très dur" },
+    { zone: "VMA courte — 30/30, 200 à 400 m", pace: "4:10 – 4:25 /km", feel: "quasi maximal" },
+  ],
+  pacesNote: "Ces allures sont calées sur ton objectif, pas sur ta forme du jour. Aux semaines 1–3 il est normal qu'elles semblent ambitieuses : vise le bas de la fourchette et laisse le corps s'adapter.",
+  tips: [
+    "Périnée : si tu ressens des fuites, une pesanteur ou une gêne pendant les séances rapides ou les sorties longues, consulte un kiné spécialisé en périnéologie avant de poursuivre le bloc 3. Ce n'est ni un échec ni un arrêt du plan.",
+    "Ferritine : fatigue qui ne passe pas malgré les semaines allégées → prise de sang (ferritine, hémoglobine). Cause très fréquente de plafonnement chez les coureuses.",
+    "Sommeil : après une nuit vraiment mauvaise, transforme la séance qualité en footing EF. Une séance sautée ne coûte rien, une blessure coûte six semaines.",
+    "4e sortie possible ? Un footing EF de 40′, pas une séance de plus. C'est le levier n°1 pour le sub-50.",
+    "Vélo / natation : 45–60 min en remplacement d'un footing si tu as des tensions, sans culpabilité.",
+    "Semaine partie en vrac : reprends-la telle quelle plutôt que d'enchaîner deux séances qualité rapprochées.",
+  ],
+  weeks: [
+    {
+      km: "~26 km", bloc: "Bloc 1 — Fondations",
+      sessions: [
+        { day: 2, title: "Qualité — 30/30", steps: [WARMUP,
+          { name: "2 × (8 × 30″/30″)", duration: 30, note: "30″ à 4:15/km, 30″ en trottinant · récup 3′ entre les blocs" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 45′", duration: 2700 }, STRIDES] },
+        { day: 0, title: "Sortie longue", steps: [{ name: "Sortie longue 1h05 EF", duration: 3900 }] },
+      ],
+    },
+    {
+      km: "~28 km", bloc: "Bloc 1 — Fondations",
+      sessions: [
+        { day: 2, title: "Qualité — VMA courte", steps: [WARMUP,
+          { name: "8 × 400 m à 4:25/km", note: "récup 1′15 en trottinant" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 45′", duration: 2700 }, STRIDES] },
+        { day: 0, title: "Sortie longue", steps: [{ name: "Sortie longue 1h10 EF", duration: 4200 }] },
+      ],
+    },
+    {
+      km: "~30 km", bloc: "Bloc 1 — Fondations",
+      sessions: [
+        { day: 2, title: "Qualité — seuil", steps: [WARMUP,
+          { name: "2 × 10′ au seuil", sets: 2, duration: 600, note: "5:25/km · récup 3′" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 50′", duration: 3000 }] },
+        { day: 0, title: "Sortie longue", steps: [{ name: "Sortie longue 1h15 EF", duration: 4500 }] },
+      ],
+    },
+    {
+      km: "~24 km", note: "semaine allégée", bloc: "Bloc 1 — Fondations",
+      sessions: [
+        { day: 2, title: "Qualité — 30/30", steps: [WARMUP,
+          { name: "12 × 30″/30″", duration: 30, note: "30″ à 4:15/km, 30″ en trottinant" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 40′", duration: 2400 }, STRIDES] },
+        { day: 0, title: "Sortie longue", steps: [{ name: "Sortie longue 1h00 EF", duration: 3600 }] },
+      ],
+    },
+    {
+      km: "~31 km", bloc: "Bloc 2 — Développement du seuil",
+      sessions: [
+        { day: 2, title: "Qualité — VMA longue", steps: [WARMUP,
+          { name: "6 × 800 m à 4:40/km", note: "récup 1′30" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 50′", duration: 3000 }, STRIDES] },
+        { day: 0, title: "Sortie longue", steps: [
+          { name: "Sortie longue 1h15", duration: 4500, note: "les 15 dernières minutes progressives, finir vers 5:30/km" },
+          { name: "Final progressif 15′", duration: 900, note: "finir vers 5:30/km" }] },
+      ],
+    },
+    {
+      km: "~33 km", bloc: "Bloc 2 — Développement du seuil",
+      sessions: [
+        { day: 2, title: "Qualité — seuil", steps: [WARMUP,
+          { name: "3 × 10′ au seuil", sets: 3, duration: 600, note: "5:20/km · récup 2′30" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 50′", duration: 3000 }] },
+        { day: 0, title: "Sortie longue", steps: [{ name: "Sortie longue 1h20 EF", duration: 4800 }] },
+      ],
+    },
+    {
+      km: "~34 km", bloc: "Bloc 2 — Développement du seuil",
+      sessions: [
+        { day: 2, title: "Qualité — VMA longue", steps: [WARMUP,
+          { name: "5 × 1000 m à 4:50/km", note: "récup 2′" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 50′", duration: 3000 }, STRIDES] },
+        { day: 0, title: "Sortie longue", steps: [
+          { name: "Sortie longue 1h20", duration: 4800, note: "avec 2 × 10′ à 5:30/km" },
+          { name: "2 × 10′ à 5:30/km", sets: 2, duration: 600 }] },
+      ],
+    },
+    {
+      km: "~27 km", note: "semaine allégée + test", bloc: "Bloc 2 — Développement du seuil",
+      sessions: [
+        { day: 2, title: "TEST — 5 km chrono", steps: [
+          { name: "Échauffement complet 15–20′ + lignes droites", duration: 1080 },
+          { name: "5 km chronométrés à fond", note: "plat, sans vent · 23:30 ≈ sur les rails pour 49′ · 24:15 ≈ 50–51′ · au-dessus de 25:00 → vise 50:30 le jour J et garde le sub-50 pour la course suivante" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 40′", duration: 2400 }] },
+        { day: 0, title: "Sortie longue", steps: [{ name: "Sortie longue 1h05 EF", duration: 3900 }] },
+      ],
+    },
+    {
+      km: "~35 km", bloc: "Bloc 3 — Spécifique 10 km",
+      sessions: [
+        { day: 2, title: "Qualité — allure 10 km", steps: [WARMUP,
+          { name: "4 × 1500 m à 4:55/km", note: "récup 2′30" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 50′", duration: 3000 }, STRIDES] },
+        { day: 0, title: "Sortie longue", steps: [{ name: "Sortie longue 1h25 EF", duration: 5100 }] },
+      ],
+    },
+    {
+      km: "~36 km", note: "la semaine la plus dure", bloc: "Bloc 3 — Spécifique 10 km",
+      sessions: [
+        { day: 2, title: "Qualité — allure 10 km", steps: [WARMUP,
+          { name: "2 × (3 × 1000 m à 4:50/km)", note: "récup 1′30 entre les répétitions, 3′ entre les blocs" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 50′", duration: 3000 }] },
+        { day: 0, title: "Sortie longue", steps: [
+          { name: "Sortie longue 1h20", duration: 4800, note: "avec 20′ à 5:20/km" },
+          { name: "20′ à 5:20/km", duration: 1200 }] },
+      ],
+    },
+    {
+      km: "~33 km", bloc: "Bloc 3 — Spécifique 10 km",
+      sessions: [
+        { day: 2, title: "Qualité — allure 10 km", steps: [WARMUP,
+          { name: "3 × 2000 m à 4:55–5:00/km", note: "récup 3′" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [{ name: "Footing EF 45′", duration: 2700 }, STRIDES] },
+        { day: 0, title: "Sortie longue", steps: [
+          { name: "Sortie longue 1h10", duration: 4200, note: "avec 3 × 5′ à allure 10 km, récup 3′" },
+          { name: "3 × 5′ à allure 10 km", sets: 3, duration: 300, note: "récup 3′" }] },
+      ],
+    },
+    {
+      km: "~23 km, course incluse", note: "semaine de course !", bloc: "Affûtage",
+      sessions: [
+        { day: 2, title: "Affûtage", steps: [WARMUP,
+          { name: "6 × 400 m à 4:40/km", note: "récup 1′30 · ~7 km au total" },
+          COOLDOWN] },
+        { day: 4, title: "Footing EF", steps: [
+          { name: "Footing EF 35′", duration: 2100 },
+          { name: "5 lignes droites de 80 m" }] },
+        { day: 5, title: "Repos", steps: [{ name: "Repos complet vendredi et samedi", note: "on ne gagne plus rien, on encaisse" }] },
+        { day: 0, title: "10 KM — OBJECTIF", steps: [
+          { name: "10 km — objectif 49:50", note: "km 1 : 5:05, laisse partir les autres · km 2–7 : 4:55–4:58, le plus régulier possible · km 8–10 : 4:50 ou ce qu'il reste · passage 5 km visé : 24:50" }] },
+      ],
+    },
+  ],
+};
+
 // ---------- Stockage ----------
 // v2 : passage au programme en blocs (l'ancien programme v1 est remplacé).
 const LS_PROGRAM = "sst_program_v2";
 const LS_SESSIONS = "sst_sessions_v1";
+const LS_COURSE = "sst_course_v1";
 
 function loadJSON(key, fallback) {
   try {
@@ -230,6 +396,8 @@ function loadJSON(key, fallback) {
 // lui-même et « Réinitialiser ce jour » restaurait la version modifiée.
 let program = loadJSON(LS_PROGRAM, null) || structuredClone(DEFAULT_PROGRAM);
 let sessions = loadJSON(LS_SESSIONS, {});
+// Suivi course : { week: index 0–11 de la semaine affichée, checked: { "w-s-e": ts } }
+let courseState = loadJSON(LS_COURSE, { week: 0, checked: {} });
 
 // Migration : les programmes v2 stockés avant l'ajout de la section
 // quotidienne n'ont pas de champ daily.
@@ -240,6 +408,7 @@ if (!program.daily) {
 
 function saveProgram() { localStorage.setItem(LS_PROGRAM, JSON.stringify(program)); }
 function saveSessions() { localStorage.setItem(LS_SESSIONS, JSON.stringify(sessions)); }
+function saveCourse() { localStorage.setItem(LS_COURSE, JSON.stringify(courseState)); }
 
 // ---------- Helpers ----------
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -302,6 +471,7 @@ let currentTab = "today";
 
 function render() {
   if (currentTab === "today") renderToday();
+  else if (currentTab === "course") renderCourse();
   else if (currentTab === "history") renderHistory();
   else renderProgramEditor();
 }
@@ -496,6 +666,116 @@ function toggleExo(id, name) {
   render();
 }
 
+// ---------- Onglet Course : plan 10 km sub-50 ----------
+const COURSE_DAY_LABEL = { 2: "Mardi", 4: "Jeudi", 5: "Vendredi & samedi", 0: "Dimanche" };
+
+function courseKey(wIdx, sIdx, eIdx) { return `${wIdx}-${sIdx}-${eIdx}`; }
+
+function weekDone(wIdx) {
+  const week = COURSE_PLAN.weeks[wIdx];
+  return week.sessions.every((s, sIdx) =>
+    s.steps.every((_, eIdx) => courseState.checked[courseKey(wIdx, sIdx, eIdx)]));
+}
+
+function renderCourse() {
+  const wIdx = Math.min(Math.max(courseState.week || 0, 0), COURSE_PLAN.weeks.length - 1);
+  courseState.week = wIdx;
+  const week = COURSE_PLAN.weeks[wIdx];
+  const todayDow = new Date().getDay();
+
+  dayTitle.textContent = `Course — S${wIdx + 1}`;
+  daySubtitle.textContent = COURSE_PLAN.goal;
+
+  // Sélecteur de semaine
+  let html = `<div class="day-chips">`;
+  COURSE_PLAN.weeks.forEach((w, i) => {
+    html += `<button class="chip ${i === wIdx ? "active" : ""} ${weekDone(i) ? "done-week" : ""}" data-week="${i}">S${i + 1}${weekDone(i) ? " ✓" : ""}</button>`;
+  });
+  html += `</div>`;
+
+  html += `<p class="block-name">${escapeHtml(week.bloc)} · ${escapeHtml(week.km)}${week.note ? ` · ${escapeHtml(week.note)}` : ""}</p>`;
+
+  // Progression de la semaine
+  const total = week.sessions.reduce((n, s) => n + s.steps.length, 0);
+  const done = week.sessions.reduce((n, s, sIdx) =>
+    n + s.steps.filter((_, eIdx) => courseState.checked[courseKey(wIdx, sIdx, eIdx)]).length, 0);
+  html += `
+    <div class="progress-wrap">
+      <div class="progress-text">${done} / ${total} étapes cette semaine</div>
+      <div class="progress-bar"><div style="width:${total ? (100 * done) / total : 0}%"></div></div>
+    </div>`;
+
+  // Allures de travail
+  html += `<details class="fold"><summary>Allures de travail</summary>`;
+  html += COURSE_PLAN.paces.map((p) => `
+    <div class="pace-row">
+      <div class="pace-zone">${escapeHtml(p.zone)}</div>
+      <div class="pace-val">${escapeHtml(p.pace)}</div>
+      <div class="pace-feel">${escapeHtml(p.feel)}</div>
+    </div>`).join("");
+  html += `<p class="data-hint">${escapeHtml(COURSE_PLAN.pacesNote)}</p></details>`;
+
+  // Séances de la semaine
+  week.sessions.forEach((s, sIdx) => {
+    const isToday = s.day === todayDow;
+    html += `<div class="section-label">${COURSE_DAY_LABEL[s.day] || ""} — ${escapeHtml(s.title)}${isToday ? ` <span class="today-badge">aujourd'hui</span>` : ""}</div>`;
+    html += s.steps.map((step, eIdx) => {
+      const key = courseKey(wIdx, sIdx, eIdx);
+      return courseStepCard(step, key);
+    }).join("");
+  });
+
+  // Conseils
+  html += `<details class="fold"><summary>Conseils & points de vigilance</summary>`;
+  html += COURSE_PLAN.tips.map((t) => `<p class="data-hint">${escapeHtml(t)}</p>`).join("");
+  html += `</details>`;
+
+  app.innerHTML = html;
+
+  const activeChip = app.querySelector(".chip[data-week].active");
+  if (activeChip) activeChip.scrollIntoView({ block: "nearest", inline: "center" });
+
+  app.querySelectorAll(".chip[data-week]").forEach((c) => {
+    c.addEventListener("click", () => {
+      courseState.week = parseInt(c.dataset.week, 10);
+      if (timer) closeTimer();
+      saveCourse();
+      render();
+    });
+  });
+
+  app.querySelectorAll(".exo[data-ckey]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const key = el.dataset.ckey;
+      if (courseState.checked[key]) delete courseState.checked[key];
+      else courseState.checked[key] = Date.now();
+      saveCourse();
+      render();
+    });
+  });
+
+  bindTimerControls();
+}
+
+function courseStepCard(step, key) {
+  const done = !!courseState.checked[key];
+  const meta = metaText(step);
+  const hasTimer = !!step.duration;
+  const isOpen = timer && timer.exoId === key;
+  return `
+    <div class="exo ${done ? "done" : ""}" data-ckey="${key}">
+      <div class="row">
+        <div class="check">✓</div>
+        <div class="info">
+          <div class="name">${escapeHtml(step.name)}</div>
+          ${meta ? `<div class="meta">${meta}</div>` : ""}
+        </div>
+        ${hasTimer ? `<button class="timer-chip ${isOpen ? "open" : ""}" data-timer="${key}" data-duration="${step.duration}">⏱</button>` : ""}
+      </div>
+      ${isOpen ? timerPanel() : ""}
+    </div>`;
+}
+
 // ---------- Historique ----------
 let expandedDates = new Set();
 
@@ -656,10 +936,11 @@ function bindDataEvents() {
 function exportJSON() {
   const data = {
     app: "sport-session-tracker",
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     program: program,
     sessions: sessions,
+    course: courseState,
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -701,14 +982,20 @@ function importJSON(file) {
     }
     const normalized = normalizeProgram(data.program);
     const hasSessions = data.sessions && typeof data.sessions === "object";
-    if (!normalized && !hasSessions) {
-      alert("Ce fichier ne contient ni programme ni sessions reconnus.");
+    const hasCourse = data.course && typeof data.course.checked === "object";
+    if (!normalized && !hasSessions && !hasCourse) {
+      alert("Ce fichier ne contient ni programme, ni sessions, ni suivi course reconnus.");
       return;
     }
-    const parts = [normalized ? "le programme" : null, hasSessions ? "l'historique" : null].filter(Boolean).join(" et ");
+    const parts = [
+      normalized ? "le programme" : null,
+      hasSessions ? "l'historique" : null,
+      hasCourse ? "le suivi course" : null,
+    ].filter(Boolean).join(" et ");
     if (!confirm(`Importer ${parts} ? Les données actuelles seront remplacées.`)) return;
     if (normalized) { program = normalized; saveProgram(); }
     if (hasSessions) { sessions = data.sessions; saveSessions(); }
+    if (hasCourse) { courseState = data.course; saveCourse(); }
     editingExoId = null;
     render();
     alert("Import réussi ✓");
