@@ -8,9 +8,13 @@ la séance, grandes zones tactiles, saisie en quelques secondes.
 
 ## Fonctionnalités
 
-- **Séance du jour** : exercices du jour selon le bloc actif du programme
-  (12 semaines en 3 blocs : fondations, charge, consolidation), coche à la
-  carte (toute la carte est tactile), barre de progression.
+- **Renfo (séance du jour)** : exercices du jour selon le bloc actif du
+  programme de renforcement (12 semaines en 3 blocs : fondations, charge,
+  consolidation), coche à la carte (toute la carte est tactile), barre de
+  progression.
+- **Course** : plan 10 km sub-50 en 12 semaines (S1→S12) — 3 séances par
+  semaine (qualité / EF / sortie longue), allures de travail, étapes cochables
+  avec timers, suivi par semaine indépendant des dates.
 - **Timers** : bouton ⏱ sur les exercices avec durée — compte à rebours en
   gros chiffres, Démarrer/Pause, ±15 s, vibration + bip à zéro.
 - **Programme modifiable jour par jour** : onglet Programme — choix du bloc

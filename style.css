@@ -342,6 +342,53 @@ body {
 
 .hist-exo.done { color: var(--text); }
 
+/* Onglet Course */
+.fold {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 12px 0;
+  padding: 0 16px;
+}
+
+.fold summary {
+  padding: 16px 0;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fold summary::after { content: " ▾"; color: var(--muted); }
+.fold[open] summary::after { content: " ▴"; }
+
+.fold > :last-child { padding-bottom: 8px; }
+
+.pace-row {
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+}
+
+.pace-zone { font-weight: 600; font-size: 0.95rem; }
+.pace-val { color: var(--accent); font-weight: 700; margin-top: 2px; }
+.pace-feel { color: var(--muted); font-size: 0.88rem; margin-top: 2px; }
+
+.today-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: #08111d;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.chip.done-week:not(.active) { color: var(--green); border-color: #2b4a35; }
+
 .day-hint {
   color: var(--muted);
   font-size: 0.9rem;
@@ -388,10 +435,11 @@ body {
   background: none;
   border: none;
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  padding: 18px 4px;
+  padding: 18px 2px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .tab.active { color: var(--accent); }

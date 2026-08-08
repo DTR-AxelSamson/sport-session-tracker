@@ -97,6 +97,21 @@ grandes zones tactiles, saisie < 15 s.
       « Réinitialiser » restaurait la version modifiée. Corrigé par un
       `structuredClone` du défaut au chargement.
 
+- [x] Onglet Course : plan 10 km sub-50 en 12 semaines (S1→S12), séparé du
+      renforcement (onglet renommé « Renfo »). Sélecteur de semaine persistant
+      (`sst_course_v1` : { week, checked }), suivi coché par étape indépendant
+      des dates (clé `semaine-séance-étape`) pour pouvoir décaler une séance.
+      3 séances/semaine (mardi qualité, jeudi EF + lignes droites, dimanche
+      sortie longue) + Ven/Sam repos et 10 km objectif en S12. Échauffement /
+      retour au calme comme étapes cochables avec timer ; timers sur 30/30,
+      blocs seuil, EF. Dépliants « Allures de travail » (5 zones) et
+      « Conseils & points de vigilance » (périnée, ferritine, sommeil, marges).
+      Chips S1–S12 avec ✓ quand la semaine est complète, badge « aujourd'hui »
+      sur la séance du jour, export/import JSON étendu au suivi course
+      (version 2, rétrocompatible). Le plan course n'est pas éditable dans
+      l'app (statique dans le code), contrairement au programme de renfo.
+      Cache SW bumpé `sst-v4`.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).
