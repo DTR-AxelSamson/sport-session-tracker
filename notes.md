@@ -1,0 +1,41 @@
+# Notes de développement — Sport Session Tracker
+
+## Objectif
+App web statique (pas de build, pas de framework) de suivi des sessions du programme
+de rééducation/renforcement hebdomadaire. Mobile-first : téléphone posé au sol,
+grandes zones tactiles, saisie < 15 s.
+
+## Architecture
+- `index.html` : coquille (header, zone app, tabbar), charge `style.css` + `app.js`.
+- `app.js` : tout le JS vanilla — programme par défaut, rendu, stockage.
+- `style.css` : mobile-first, thème sombre (lisible au sol / en salle).
+
+## Modèle de données
+- `program` (localStorage `sst_program_v1`) :
+  - `daily` : exercices "chaque jour" (base quotidienne).
+  - `days` : clé = `Date.getDay()` (0 = dimanche … 6 = samedi), chaque jour a
+    `title` + `exercises`.
+  - Exercice : `{ id, name, sets?, reps?, perSide?, duration? (secondes), note? }`.
+    `duration` présent ⇒ timer affiché ; `reps` peut être une chaîne ("8–10").
+- `sessions` (localStorage `sst_sessions_v1`) : clé = date `YYYY-MM-DD`,
+  valeur `{ checked: {exoId: timestamp}, names: {exoId: nom} }`.
+  On snapshotte le nom au moment du check pour que l'historique survive aux
+  modifications du programme.
+
+## Décisions
+- Coche à la maille exercice (pas par série) — saisie rapide, carte entière cliquable.
+- Thème sombre par défaut, texte large, cartes ≥ 72 px de haut.
+- IDs d'exercices : chaînes courtes stables pour le programme par défaut,
+  générés (uid) pour les exercices ajoutés par l'utilisateur.
+
+## Avancement
+- [x] v1 : vue du jour (base quotidienne + séance du jour), coches persistées en
+      localStorage, barre de progression, tabbar 3 onglets.
+- [ ] Timers (compte à rebours, modifiables) sur les exercices avec durée.
+- [ ] Édition du programme à la maille jour (ajout/suppression/modif d'exercices).
+- [ ] Historique des sessions passées.
+- [ ] Export / import JSON.
+
+## À garder en tête
+- Pas de dépendance réseau : tout doit marcher offline une fois chargé.
+- `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).
