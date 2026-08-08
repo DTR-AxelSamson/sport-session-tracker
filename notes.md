@@ -10,13 +10,23 @@ grandes zones tactiles, saisie < 15 s.
 - `app.js` : tout le JS vanilla — programme par défaut, rendu, stockage.
 - `style.css` : mobile-first, thème sombre (lisible au sol / en salle).
 
-## Modèle de données
-- `program` (localStorage `sst_program_v1`) :
-  - `daily` : exercices "chaque jour" (base quotidienne).
-  - `days` : clé = `Date.getDay()` (0 = dimanche … 6 = samedi), chaque jour a
-    `title` + `exercises`.
+## Modèle de données (v2 — programme en blocs)
+- `program` (localStorage `sst_program_v2`) :
+  - `activeBlock` : "1" | "2" | "3" — le bloc utilisé par l'onglet Séance,
+    sélectionnable dans l'onglet Programme.
+  - `blocks` : chaque bloc a `name`, `gate` (critères de feu vert affichés dans
+    l'éditeur) et `days` (clé = `Date.getDay()`, 0 = dimanche … 6 = samedi),
+    chaque jour a `title`, `hint?` (ex. consigne d'enchaînement par paires)
+    + `exercises`.
   - Exercice : `{ id, name, sets?, reps?, perSide?, duration? (secondes), note? }`.
-    `duration` présent ⇒ timer affiché ; `reps` peut être une chaîne ("8–10").
+    `duration` présent ⇒ timer affiché ; `reps` peut être une chaîne ("8–10",
+    "20 m", "10 touches").
+- Répartition hebdo des blocs (12 semaines, 3 blocs de 4) :
+  Lun = Force A, Mar = Course sortie 1, Mer = Force B, Jeu = repos,
+  Ven = Course sortie 2, Sam = repos, Dim = Course sortie 3.
+  Les codes A1/A2/B1/B2/C1/C2 des paires sont dans le nom des exercices.
+- L'ancien format v1 (`daily` + `days`) reste importable : converti en un bloc
+  unique, base quotidienne fusionnée en tête de chaque jour (`normalizeProgram`).
 - `sessions` (localStorage `sst_sessions_v1`) : clé = date `YYYY-MM-DD`,
   valeur `{ checked: {exoId: timestamp}, names: {exoId: nom} }`.
   On snapshotte le nom au moment du check pour que l'historique survive aux
@@ -65,6 +75,16 @@ grandes zones tactiles, saisie < 15 s.
       Enregistrement du SW seulement en http(s), pas en file://.
       Testé sur serveur local : SW actif, manifest et icônes servis,
       rechargement hors ligne OK avec coches persistées.
+
+- [x] Nouveau programme par défaut : 12 semaines en 3 blocs (fondations /
+      charge / consolidation), séances Force A & B en paires + 3 sorties course
+      par semaine. Sélecteur de bloc dans l'onglet Programme (le bloc actif
+      pilote l'onglet Séance), critères de « feu vert » affichés par bloc.
+      Suppression du concept « base quotidienne » ; clé localStorage passée à
+      `sst_program_v2` (repart sur le nouveau défaut) ; cache SW bumpé `sst-v2`.
+      L'historique note le bloc (« Force A · Bloc 1 »). Testé : switch de bloc,
+      édition d'une durée de planche, export v2, réimport, import d'un ancien
+      export v1 converti automatiquement.
 
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.

@@ -8,13 +8,15 @@ la séance, grandes zones tactiles, saisie en quelques secondes.
 
 ## Fonctionnalités
 
-- **Séance du jour** : base quotidienne + exercices du jour de la semaine,
-  coche à la carte (toute la carte est tactile), barre de progression.
+- **Séance du jour** : exercices du jour selon le bloc actif du programme
+  (12 semaines en 3 blocs : fondations, charge, consolidation), coche à la
+  carte (toute la carte est tactile), barre de progression.
 - **Timers** : bouton ⏱ sur les exercices avec durée — compte à rebours en
   gros chiffres, Démarrer/Pause, ±15 s, vibration + bip à zéro.
-- **Programme modifiable jour par jour** : onglet Programme — ajout,
-  modification, suppression, réordonnancement des exercices, titre du jour,
-  retour au programme d'origine.
+- **Programme modifiable jour par jour** : onglet Programme — choix du bloc
+  actif (avec critères de passage au bloc suivant), ajout, modification,
+  suppression, réordonnancement des exercices, titre du jour, retour au
+  programme d'origine.
 - **Historique** : sessions passées avec % de complétion et détail dépliable.
 - **Données** : tout est en `localStorage` ; export/import JSON depuis
   l'onglet Programme.

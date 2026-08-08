@@ -342,6 +342,19 @@ body {
 
 .hist-exo.done { color: var(--text); }
 
+.day-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 10px 6px 14px;
+}
+
+.block-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 6px 6px 6px;
+}
+
 .data-hint {
   color: var(--muted);
   font-size: 0.85rem;

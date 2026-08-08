@@ -2,84 +2,211 @@
 "use strict";
 
 // ---------- Programme par défaut ----------
-// Chaque exercice : { id, name, sets, reps, perSide, duration (secondes, => timer) }
-// reps peut être une chaîne ("8–10") ; duration affiche un timer.
+// Programme en 3 blocs de 4 semaines. Un seul bloc est actif à la fois
+// (sélection dans l'onglet Programme) ; chaque bloc répartit ses séances
+// sur la semaine : Lun = Force A, Mar = Sortie 1, Mer = Force B,
+// Jeu = repos, Ven = Sortie 2, Sam = repos, Dim = Sortie 3.
+// Chaque exercice : { id, name, sets, reps, perSide, duration (secondes, => timer), note }
+// reps peut être une chaîne ("8–10", "20 m") ; duration affiche un timer.
+// Clé de days = getDay() JS : 0 = dimanche … 6 = samedi.
+
+const PAIR_HINT = "Enchaîne par paires pour gagner du temps : A1 + A2 en alternance, puis B1 + B2, puis C1 + C2.";
 
 const DEFAULT_PROGRAM = {
-  daily: {
-    title: "Chaque jour",
-    subtitle: "5 à 8 min",
-    exercises: [
-      { id: "d1", name: "Respiration diaphragmatique", duration: 120 },
-      { id: "d2", name: "Expiration lente en rentrant doucement le bas-ventre", reps: "8–10" },
-      { id: "d3", name: "Contraction douce du périnée sur l'expiration", reps: "8–10" },
-      { id: "d4", name: "Marche légère", duration: 900, note: "idéalement 10 à 20 min" },
-    ],
-  },
-  // Clé = getDay() JS : 0 = dimanche … 6 = samedi
-  days: {
-    1: {
-      title: "Sangle abdominale",
-      exercises: [
-        { id: "mo1", name: "Respiration + engagement abdominal", sets: 2, reps: 8 },
-        { id: "mo2", name: "Bascule du bassin au sol", sets: 2, reps: 10 },
-        { id: "mo3", name: "Heel slides (glisser un talon)", sets: 2, reps: 8, perSide: "jambe" },
-        { id: "mo4", name: "Pont fessier", sets: 3, reps: 10 },
-        { id: "mo5", name: "Bird-dog très léger", sets: 2, reps: 6, perSide: "côté" },
-      ],
+  activeBlock: "1",
+  blocks: {
+    "1": {
+      name: "Bloc 1 — Fondations (sem. 1–4)",
+      gate: "Objectif : réinstaller le réflexe respiration-transverse sous charge légère, et remettre la course en place proprement.",
+      days: {
+        1: {
+          title: "Force A",
+          hint: PAIR_HINT,
+          exercises: [
+            { id: "b1a1", name: "A1 · Pont fessier", sets: 3, reps: 12, note: "Expire en montant. Côtes basses, pas de cambrure." },
+            { id: "b1a2", name: "A2 · Rowing élastique", sets: 3, reps: 12, note: "Omoplates vers les poches arrière." },
+            { id: "b1a3", name: "B1 · Squat (chaise derrière)", sets: 3, reps: 10, note: "Expire en remontant." },
+            { id: "b1a4", name: "B2 · Dead bug, jambes pliées 90°", sets: 2, reps: 8, perSide: "côté", note: "Bas du dos collé au sol. Un seul bras + jambe opposée à la fois." },
+            { id: "b1a5", name: "C1 · Planche sur les pieds", sets: 3, duration: 30, note: "Bassin légèrement rétroversé, fessiers serrés, tu respires." },
+            { id: "b1a6", name: "C2 · Portés valise (poids d'un seul côté)", sets: 2, reps: "20 m", perSide: "bras", note: "Épaules à niveau, on ne penche pas." },
+          ],
+        },
+        2: {
+          title: "Course — Sortie 1",
+          exercises: [
+            { id: "b1r1", name: "Course facile", duration: 1500, note: "20 à 25 min — test de la conversation : tu dois pouvoir parler en phrases complètes" },
+            { id: "b1r2", name: "Cadence : compte tes pas sur 15 s (× 4)", duration: 15, note: "cible 170–180 pas/min, foulées plus courtes" },
+          ],
+        },
+        3: {
+          title: "Force B",
+          hint: PAIR_HINT,
+          exercises: [
+            { id: "b1b1", name: "A1 · Charnière de hanche (élastique ou poids)", sets: 3, reps: 10, note: "Dos neutre, fesses vers l'arrière, expire en remontant." },
+            { id: "b1b2", name: "A2 · Pallof press à l'élastique", sets: 2, reps: 10, perSide: "côté", note: "Élastique sur le côté, bras tendus devant sans laisser le tronc tourner — l'anti-rotation de référence pour un diastasis." },
+            { id: "b1b3", name: "B1 · Fente arrière", sets: 2, reps: 8, perSide: "jambe", note: "Sur place, sans charge." },
+            { id: "b1b4", name: "B2 · Gainage latéral sur les genoux", sets: 2, duration: 25, perSide: "côté", note: "Hanche haute, épaules alignées." },
+            { id: "b1b5", name: "C1 · Bird-dog", sets: 2, reps: 8, perSide: "côté", note: "Pause 2 s en extension." },
+            { id: "b1b6", name: "C2 · Montées de mollets", sets: 3, reps: 15, note: "Amortit les impacts de la course." },
+          ],
+        },
+        4: {
+          title: "Repos",
+          exercises: [
+            { id: "b1x1", name: "Marche tranquille (optionnelle)", duration: 1200 },
+          ],
+        },
+        5: {
+          title: "Course — Sortie 2",
+          exercises: [
+            { id: "b1r3", name: "Course facile", duration: 1500, note: "20 à 25 min, même allure que la sortie 1" },
+            { id: "b1r4", name: "Cadence : compte tes pas sur 15 s (× 4)", duration: 15, note: "cible 170–180 pas/min, foulées plus courtes" },
+          ],
+        },
+        6: {
+          title: "Repos",
+          exercises: [
+            { id: "b1x2", name: "Marche tranquille (optionnelle)", duration: 1200 },
+          ],
+        },
+        0: {
+          title: "Course — Sortie 3",
+          exercises: [
+            { id: "b1r5", name: "Course facile", duration: 1800, note: "25 à 30 min, même allure" },
+            { id: "b1r6", name: "Cadence : compte tes pas sur 15 s (× 4)", duration: 15, note: "cible 170–180 pas/min, foulées plus courtes" },
+          ],
+        },
+      },
     },
-    2: {
-      title: "Cardio doux",
-      exercises: [
-        { id: "tu1", name: "Marche active", duration: 2100, note: "30 à 40 min" },
-        { id: "tu2", name: "Respiration / activation abdominale", duration: 300 },
-      ],
+    "2": {
+      name: "Bloc 2 — Charge (sem. 5–8)",
+      gate: "Feu vert pour ce bloc : planche 45 s propre sans coning, aucune pesanteur après les courses, respiration fluide sur tous les exercices. Sinon, prolonge le bloc 1 d'une ou deux semaines — ce n'est pas un retard, c'est le programme qui fonctionne.",
+      days: {
+        1: {
+          title: "Force A",
+          hint: PAIR_HINT,
+          exercises: [
+            { id: "b2a1", name: "A1 · Pont fessier une jambe", sets: 3, reps: 8, perSide: "jambe", note: "Bassin de niveau, pas de bascule." },
+            { id: "b2a2", name: "A2 · Rowing élastique", sets: 3, reps: 15, note: "Plus de tension." },
+            { id: "b2a3", name: "B1 · Squat avec poids tenu devant", sets: 3, reps: 10 },
+            { id: "b2a4", name: "B2 · Dead bug, jambe qui s'allonge davantage", sets: 2, reps: 10, perSide: "côté", note: "Le talon frôle le sol. Tu recules si le dos décolle." },
+            { id: "b2a5", name: "C1 · Planche sur les pieds", sets: 3, duration: 45, note: "45–60 s — c'est la cible de ta kiné." },
+            { id: "b2a6", name: "C2 · Portés valise plus lourds", sets: 3, reps: "25 m", perSide: "bras" },
+          ],
+        },
+        2: {
+          title: "Course — Sortie 1",
+          exercises: [
+            { id: "b2r1", name: "Course facile", duration: 1800, note: "25 à 30 min" },
+          ],
+        },
+        3: {
+          title: "Force B",
+          hint: PAIR_HINT,
+          exercises: [
+            { id: "b2b1", name: "A1 · Soulevé de terre roumain, poids", sets: 3, reps: 12, note: "Charge en hausse." },
+            { id: "b2b2", name: "A2 · Pallof press avec un pas de côté", sets: 3, reps: 10, perSide: "côté" },
+            { id: "b2b3", name: "B1 · Split squat (pied arrière sur la chaise)", sets: 3, reps: 8, perSide: "jambe" },
+            { id: "b2b4", name: "B2 · Gainage latéral sur les pieds", sets: 2, duration: 25, perSide: "côté", note: "Repasse aux genoux si la hanche tombe." },
+            { id: "b2b5", name: "C1 · Bird-dog avec pause 3 s", sets: 3, reps: 8, perSide: "côté" },
+            { id: "b2b6", name: "C2 · Montées de mollets une jambe", sets: 3, reps: 12, perSide: "jambe" },
+          ],
+        },
+        4: {
+          title: "Repos",
+          exercises: [
+            { id: "b2x1", name: "Marche tranquille (optionnelle)", duration: 1200 },
+          ],
+        },
+        5: {
+          title: "Course — Sortie 2",
+          exercises: [
+            { id: "b2r2", name: "Course facile", duration: 1500, note: "25 min" },
+            { id: "b2r3", name: "Lignes droites en accélération progressive", reps: "4–6", duration: 15, note: "pas de sprint, 1 min de marche entre chaque — premiers impacts plus forts, en très petites doses" },
+          ],
+        },
+        6: {
+          title: "Repos",
+          exercises: [
+            { id: "b2x2", name: "Marche tranquille (optionnelle)", duration: 1200 },
+          ],
+        },
+        0: {
+          title: "Course — Sortie 3",
+          exercises: [
+            { id: "b2r4", name: "Course facile", duration: 2100, note: "30 à 35 min" },
+          ],
+        },
+      },
     },
-    3: {
-      title: "Renforcement",
-      exercises: [
-        { id: "we1", name: "Pont fessier", sets: 3, reps: 12 },
-        { id: "we2", name: "Squat sur chaise", sets: 3, reps: 10 },
-        { id: "we3", name: "Rowing avec élastique", sets: 3, reps: 12 },
-        { id: "we4", name: "Bird-dog", sets: 2, reps: 8, perSide: "côté" },
-        { id: "we5", name: "Heel slides", sets: 2, reps: 10 },
-      ],
-    },
-    4: {
-      title: "Récupération",
-      exercises: [
-        { id: "th1", name: "Marche tranquille", duration: 1500, note: "20 à 30 min" },
-        { id: "th2", name: "Respiration + périnée", duration: 360, note: "5 à 8 min" },
-      ],
-    },
-    5: {
-      title: "Sangle abdominale",
-      exercises: [
-        { id: "fr1", name: "Respiration avec expiration active", sets: 2, reps: 10 },
-        { id: "fr2", name: "Dead bug version très facile", sets: 2, reps: 6, perSide: "côté" },
-        { id: "fr3", name: "Pont fessier", sets: 3, reps: 12 },
-        { id: "fr4", name: "Gainage latéral sur les genoux", sets: 2, duration: 20, perSide: "côté", note: "15–20 s" },
-        { id: "fr5", name: "Squat", sets: 3, reps: 10 },
-      ],
-    },
-    6: {
-      title: "Activité plaisir",
-      exercises: [
-        { id: "sa1", name: "Marche, vélo, natation ou autre activité modérée", duration: 2400, note: "30 à 45 min" },
-      ],
-    },
-    0: {
-      title: "Repos",
-      exercises: [
-        { id: "su1", name: "Petite promenade si tu en as envie" },
-        { id: "su2", name: "Quelques respirations profondes" },
-      ],
+    "3": {
+      name: "Bloc 3 — Consolidation (sem. 9–12)",
+      gate: "Feu vert pour ce bloc : planche 60 s propre, gainage latéral sur les pieds tenu 30 s, aucun symptôme après les lignes droites.",
+      days: {
+        1: {
+          title: "Force A",
+          hint: PAIR_HINT,
+          exercises: [
+            { id: "b3a1", name: "A1 · Hip thrust (épaules sur le canapé), avec poids", sets: 3, reps: 12 },
+            { id: "b3a2", name: "A2 · Rowing élastique un bras", sets: 3, reps: 12, perSide: "bras", note: "Anti-rotation en prime." },
+            { id: "b3a3", name: "B1 · Squat chargé", sets: 4, reps: 8 },
+            { id: "b3a4", name: "B2 · Dead bug complet, jambe tendue", sets: 3, reps: 10, perSide: "côté" },
+            { id: "b3a5", name: "C1 · Planche avec touche d'épaule alternée", sets: 3, reps: "10 touches", note: "Le bassin ne bouge pas d'un millimètre. Le vrai test." },
+            { id: "b3a6", name: "C2 · Portés valise lourds", sets: 3, reps: "30 m", perSide: "bras" },
+          ],
+        },
+        2: {
+          title: "Course — Sortie 1",
+          exercises: [
+            { id: "b3r1", name: "Course facile", duration: 1800, note: "30 min" },
+          ],
+        },
+        3: {
+          title: "Force B",
+          hint: PAIR_HINT,
+          exercises: [
+            { id: "b3b1", name: "A1 · Soulevé de terre une jambe", sets: 3, reps: 8, perSide: "jambe" },
+            { id: "b3b2", name: "A2 · Pallof press à genoux, en rotation lente", sets: 3, reps: 10, perSide: "côté" },
+            { id: "b3b3", name: "B1 · Fente marchée avec poids", sets: 3, reps: 10, perSide: "jambe" },
+            { id: "b3b4", name: "B2 · Gainage latéral pieds + levée de jambe", sets: 3, reps: 8, perSide: "côté" },
+            { id: "b3b5", name: "C1 · Bear crawl (genoux à 2 cm du sol)", sets: 3, duration: 20 },
+            { id: "b3b6", name: "C2 · Sauts légers sur place, réception souple", sets: 3, duration: 20, note: "Prépare aux impacts. Aucune fuite tolérée." },
+          ],
+        },
+        4: {
+          title: "Repos",
+          exercises: [
+            { id: "b3x1", name: "Marche tranquille (optionnelle)", duration: 1200 },
+          ],
+        },
+        5: {
+          title: "Course — Sortie 2 (fractionné)",
+          exercises: [
+            { id: "b3r2", name: "Échauffement course facile", duration: 600, note: "10 min" },
+            { id: "b3r3", name: "Fractionné : 1 min soutenu / 1 min marche", sets: 6, duration: 60, note: "6 répétitions — le timer couvre la minute soutenue" },
+            { id: "b3r4", name: "Retour au calme", duration: 300, note: "5 min" },
+          ],
+        },
+        6: {
+          title: "Repos",
+          exercises: [
+            { id: "b3x2", name: "Marche tranquille (optionnelle)", duration: 1200 },
+          ],
+        },
+        0: {
+          title: "Course — Sortie 3",
+          exercises: [
+            { id: "b3r5", name: "Course facile, ou côtes douces", duration: 2400, note: "35 à 40 min — les côtes chargent moins l'impact que le plat rapide" },
+          ],
+        },
+      },
     },
   },
 };
 
 // ---------- Stockage ----------
-const LS_PROGRAM = "sst_program_v1";
+// v2 : passage au programme en blocs (l'ancien programme v1 est remplacé).
+const LS_PROGRAM = "sst_program_v2";
 const LS_SESSIONS = "sst_sessions_v1";
 
 function loadJSON(key, fallback) {
@@ -110,24 +237,24 @@ function getSession(dateKey) {
     // Snapshot du plan du jour : l'historique reste juste même si le
     // programme est modifié plus tard.
     const d = new Date(dateKey + "T12:00:00");
-    const { daily, specific, title } = exercisesForDay(d.getDay());
+    const day = exercisesForDay(d.getDay());
     sessions[dateKey] = {
       checked: {},
       names: {},
-      title: title,
-      planned: [...daily, ...specific].map((e) => ({ id: e.id, name: e.name })),
+      title: day.title + " · Bloc " + program.activeBlock,
+      planned: day.exercises.map((e) => ({ id: e.id, name: e.name })),
     };
   }
   return sessions[dateKey];
 }
 
+function activeBlock() {
+  return program.blocks[program.activeBlock] || { name: "", days: {} };
+}
+
 function exercisesForDay(dayIdx) {
-  const day = program.days[dayIdx] || { title: "", exercises: [] };
-  return {
-    daily: program.daily.exercises,
-    specific: day.exercises,
-    title: day.title,
-  };
+  const day = activeBlock().days[dayIdx];
+  return day || { title: "", exercises: [] };
 }
 
 function metaText(exo) {
@@ -165,13 +292,14 @@ function render() {
 function renderToday() {
   const now = new Date();
   const dayIdx = now.getDay();
-  const { daily, specific, title } = exercisesForDay(dayIdx);
+  const day = exercisesForDay(dayIdx);
   const session = getSession(todayKey());
 
-  dayTitle.textContent = DAY_NAMES[dayIdx] + (title ? " — " + title : "");
-  daySubtitle.textContent = now.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+  dayTitle.textContent = DAY_NAMES[dayIdx] + (day.title ? " — " + day.title : "");
+  daySubtitle.textContent = now.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+    + (activeBlock().name ? " · " + activeBlock().name : "");
 
-  const all = [...daily, ...specific];
+  const all = day.exercises;
   const doneCount = all.filter((e) => session.checked[e.id]).length;
 
   let html = `
@@ -180,12 +308,9 @@ function renderToday() {
       <div class="progress-bar"><div style="width:${all.length ? (100 * doneCount) / all.length : 0}%"></div></div>
     </div>`;
 
-  html += `<div class="section-label">Base quotidienne</div>`;
-  html += daily.map((e) => exoCard(e, session)).join("");
-  if (specific.length) {
-    html += `<div class="section-label">${title || "Séance du jour"}</div>`;
-    html += specific.map((e) => exoCard(e, session)).join("");
-  }
+  if (day.hint) html += `<p class="day-hint">${escapeHtml(day.hint)}</p>`;
+  html += all.map((e) => exoCard(e, session)).join("");
+  if (!all.length) html += `<div class="empty">Rien de prévu aujourd'hui.<br>Tu peux ajouter des exercices dans l'onglet Programme.</div>`;
 
   app.innerHTML = html;
 
@@ -409,32 +534,47 @@ function renderHistory() {
 }
 
 // ---------- Éditeur de programme ----------
-let editDay = null; // "daily" ou 0…6 ; null = jour courant au premier affichage
+let editDay = null; // 0…6 ; null = jour courant au premier affichage
 let editingExoId = null; // id de l'exercice en cours d'édition, ou "new"
 
 const DAY_SHORT = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
 
+function editedDay() {
+  const days = activeBlock().days;
+  if (!days[editDay]) days[editDay] = { title: "", exercises: [] };
+  return days[editDay];
+}
+
 function editedList() {
-  return editDay === "daily" ? program.daily.exercises : program.days[editDay].exercises;
+  return editedDay().exercises;
 }
 
 function renderProgramEditor() {
   if (editDay === null) editDay = new Date().getDay();
+  const block = activeBlock();
   dayTitle.textContent = "Programme";
-  daySubtitle.textContent = "Modifie les exercices jour par jour";
+  daySubtitle.textContent = "Le bloc actif est celui affiché dans l'onglet Séance";
 
-  const dayObj = editDay === "daily" ? program.daily : program.days[editDay];
+  const dayObj = editedDay();
   const list = editedList();
 
+  // Sélecteur de bloc
   let html = `<div class="day-chips">`;
-  html += `<button class="chip ${editDay === "daily" ? "active" : ""}" data-day="daily">Quotidien</button>`;
+  for (const key of Object.keys(program.blocks)) {
+    html += `<button class="chip ${program.activeBlock === key ? "active" : ""}" data-block="${escapeAttr(key)}">Bloc ${escapeHtml(key)}</button>`;
+  }
+  html += `</div>`;
+  if (block.name) html += `<p class="block-name">${escapeHtml(block.name)}</p>`;
+  if (block.gate) html += `<p class="data-hint">${escapeHtml(block.gate)}</p>`;
+
+  html += `<div class="day-chips">`;
   for (const i of [1, 2, 3, 4, 5, 6, 0]) {
     html += `<button class="chip ${editDay === i ? "active" : ""}" data-day="${i}">${DAY_SHORT[i]}</button>`;
   }
   html += `</div>`;
 
   html += `<input class="day-title-input" id="day-title-input" value="${escapeAttr(dayObj.title)}"
-             placeholder="Titre du jour" ${editDay === "daily" ? "disabled" : ""}>`;
+             placeholder="Titre du jour">`;
 
   html += list.map((exo, idx) => {
     if (editingExoId === exo.id) return exoEditForm(exo, false);
@@ -499,6 +639,24 @@ function exportJSON() {
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 
+// Accepte le format courant (blocs) et l'ancien format v1 (daily + days),
+// converti en un bloc unique avec la base quotidienne intégrée à chaque jour.
+function normalizeProgram(p) {
+  if (!p || typeof p !== "object") return null;
+  if (p.blocks && p.activeBlock && p.blocks[p.activeBlock]) return p;
+  if (p.daily && p.days) {
+    const days = {};
+    for (const k of Object.keys(p.days)) {
+      days[k] = {
+        title: p.days[k].title || "",
+        exercises: [...(p.daily.exercises || []), ...(p.days[k].exercises || [])],
+      };
+    }
+    return { activeBlock: "1", blocks: { "1": { name: "Programme importé (ancien format)", days } } };
+  }
+  return null;
+}
+
 function importJSON(file) {
   const reader = new FileReader();
   reader.onload = () => {
@@ -509,15 +667,15 @@ function importJSON(file) {
       alert("Fichier illisible : ce n'est pas du JSON valide.");
       return;
     }
-    const hasProgram = data.program && data.program.daily && data.program.days;
+    const normalized = normalizeProgram(data.program);
     const hasSessions = data.sessions && typeof data.sessions === "object";
-    if (!hasProgram && !hasSessions) {
+    if (!normalized && !hasSessions) {
       alert("Ce fichier ne contient ni programme ni sessions reconnus.");
       return;
     }
-    const parts = [hasProgram ? "le programme" : null, hasSessions ? "l'historique" : null].filter(Boolean).join(" et ");
+    const parts = [normalized ? "le programme" : null, hasSessions ? "l'historique" : null].filter(Boolean).join(" et ");
     if (!confirm(`Importer ${parts} ? Les données actuelles seront remplacées.`)) return;
-    if (hasProgram) { program = data.program; saveProgram(); }
+    if (normalized) { program = normalized; saveProgram(); }
     if (hasSessions) { sessions = data.sessions; saveSessions(); }
     editingExoId = null;
     render();
@@ -573,18 +731,27 @@ function exoEditForm(exo, isNew) {
 }
 
 function bindEditorEvents() {
-  app.querySelectorAll(".chip").forEach((c) => {
+  app.querySelectorAll(".chip[data-block]").forEach((c) => {
     c.addEventListener("click", () => {
-      editDay = c.dataset.day === "daily" ? "daily" : parseInt(c.dataset.day, 10);
+      program.activeBlock = c.dataset.block;
+      editingExoId = null;
+      saveProgram();
+      render();
+    });
+  });
+
+  app.querySelectorAll(".chip[data-day]").forEach((c) => {
+    c.addEventListener("click", () => {
+      editDay = parseInt(c.dataset.day, 10);
       editingExoId = null;
       render();
     });
   });
 
   const titleInput = document.getElementById("day-title-input");
-  if (titleInput && editDay !== "daily") {
+  if (titleInput) {
     titleInput.addEventListener("change", () => {
-      program.days[editDay].title = titleInput.value.trim();
+      editedDay().title = titleInput.value.trim();
       saveProgram();
     });
   }
@@ -615,10 +782,13 @@ function bindEditorEvents() {
 
   const resetBtn = document.getElementById("reset-day");
   if (resetBtn) resetBtn.addEventListener("click", () => {
-    const label = editDay === "daily" ? "la base quotidienne" : DAY_NAMES[editDay];
-    if (!confirm(`Réinitialiser ${label} avec le programme d'origine ?`)) return;
-    if (editDay === "daily") program.daily = structuredClone(DEFAULT_PROGRAM.daily);
-    else program.days[editDay] = structuredClone(DEFAULT_PROGRAM.days[editDay]);
+    const defBlock = DEFAULT_PROGRAM.blocks[program.activeBlock];
+    if (!defBlock || !defBlock.days[editDay]) {
+      alert("Pas de version d'origine pour ce jour dans ce bloc.");
+      return;
+    }
+    if (!confirm(`Réinitialiser ${DAY_NAMES[editDay]} (bloc ${program.activeBlock}) avec le programme d'origine ?`)) return;
+    activeBlock().days[editDay] = structuredClone(defBlock.days[editDay]);
     editingExoId = null;
     saveProgram();
     render();
