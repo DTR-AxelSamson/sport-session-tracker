@@ -686,3 +686,10 @@ document.querySelectorAll(".tab").forEach((btn) => {
 });
 
 render();
+
+// ---------- PWA ----------
+// Enregistré seulement en contexte http(s) : en ouverture directe du fichier
+// (file://) les service workers ne sont pas disponibles.
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js").catch(() => { /* hors ligne au 1er chargement */ });
+}

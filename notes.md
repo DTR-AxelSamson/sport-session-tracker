@@ -57,6 +57,15 @@ grandes zones tactiles, saisie < 15 s.
       dépliable, ajout/édition/suppression d'exercice, modification de la durée
       d'un timer, export puis réimport JSON. Tout passe, zéro erreur console.
 
+- [x] PWA installable : `manifest.json` (standalone, portrait, fr, chemins
+      relatifs pour marcher sous un sous-chemin type GitHub Pages), icônes
+      192/512 + variante maskable (générées depuis un SVG haltère + coche),
+      balises apple-touch, service worker `sw.js` (precache + stale-while-
+      revalidate, cache versionné `sst-v1` à incrémenter à chaque déploiement).
+      Enregistrement du SW seulement en http(s), pas en file://.
+      Testé sur serveur local : SW actif, manifest et icônes servis,
+      rechargement hors ligne OK avec coches persistées.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).

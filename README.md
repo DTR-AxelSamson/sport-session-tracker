@@ -18,6 +18,9 @@ la séance, grandes zones tactiles, saisie en quelques secondes.
 - **Historique** : sessions passées avec % de complétion et détail dépliable.
 - **Données** : tout est en `localStorage` ; export/import JSON depuis
   l'onglet Programme.
+- **PWA installable** : servie en HTTPS (ou localhost), l'app propose
+  « Ajouter à l'écran d'accueil » et fonctionne ensuite hors ligne
+  (manifest + service worker avec cache versionné).
 
 ## Développement
 
