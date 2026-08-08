@@ -348,10 +348,199 @@ function renderHistory() {
   app.innerHTML = `<div class="empty">Bientôt : la liste de tes précédentes sessions.</div>`;
 }
 
+// ---------- Éditeur de programme ----------
+let editDay = null; // "daily" ou 0…6 ; null = jour courant au premier affichage
+let editingExoId = null; // id de l'exercice en cours d'édition, ou "new"
+
+const DAY_SHORT = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+function editedList() {
+  return editDay === "daily" ? program.daily.exercises : program.days[editDay].exercises;
+}
+
 function renderProgramEditor() {
+  if (editDay === null) editDay = new Date().getDay();
   dayTitle.textContent = "Programme";
-  daySubtitle.textContent = "";
-  app.innerHTML = `<div class="empty">Bientôt : modification du programme jour par jour, export et import JSON.</div>`;
+  daySubtitle.textContent = "Modifie les exercices jour par jour";
+
+  const dayObj = editDay === "daily" ? program.daily : program.days[editDay];
+  const list = editedList();
+
+  let html = `<div class="day-chips">`;
+  html += `<button class="chip ${editDay === "daily" ? "active" : ""}" data-day="daily">Quotidien</button>`;
+  for (const i of [1, 2, 3, 4, 5, 6, 0]) {
+    html += `<button class="chip ${editDay === i ? "active" : ""}" data-day="${i}">${DAY_SHORT[i]}</button>`;
+  }
+  html += `</div>`;
+
+  html += `<input class="day-title-input" id="day-title-input" value="${escapeAttr(dayObj.title)}"
+             placeholder="Titre du jour" ${editDay === "daily" ? "disabled" : ""}>`;
+
+  html += list.map((exo, idx) => {
+    if (editingExoId === exo.id) return exoEditForm(exo, false);
+    return `
+      <div class="edit-row" data-edit="${exo.id}">
+        <div class="edit-row-main">
+          <div class="name">${escapeHtml(exo.name)}</div>
+          <div class="meta">${metaText(exo) || "—"}</div>
+        </div>
+        <div class="edit-row-actions">
+          <button class="mini" data-move="up" data-idx="${idx}" ${idx === 0 ? "disabled" : ""}>↑</button>
+          <button class="mini" data-move="down" data-idx="${idx}" ${idx === list.length - 1 ? "disabled" : ""}>↓</button>
+        </div>
+      </div>`;
+  }).join("");
+
+  if (editingExoId === "new") html += exoEditForm({ id: "new", name: "" }, true);
+  else html += `<button class="big-action" id="add-exo">+ Ajouter un exercice</button>`;
+
+  html += `<button class="big-action danger-ghost" id="reset-day">Réinitialiser ce jour (programme d'origine)</button>`;
+
+  app.innerHTML = html;
+  bindEditorEvents();
+}
+
+function exoEditForm(exo, isNew) {
+  const durMin = exo.duration ? Math.floor(exo.duration / 60) : "";
+  const durSec = exo.duration ? exo.duration % 60 : "";
+  return `
+    <div class="edit-form" data-form="${exo.id}">
+      <label>Nom
+        <input type="text" id="f-name" value="${escapeAttr(exo.name || "")}" placeholder="Nom de l'exercice">
+      </label>
+      <div class="form-grid">
+        <label>Séries
+          <input type="number" id="f-sets" inputmode="numeric" min="0" value="${exo.sets || ""}">
+        </label>
+        <label>Répétitions
+          <input type="text" id="f-reps" inputmode="numeric" value="${escapeAttr(exo.reps != null ? String(exo.reps) : "")}" placeholder="10 ou 8–10">
+        </label>
+      </div>
+      <div class="form-grid">
+        <label>Timer — min
+          <input type="number" id="f-min" inputmode="numeric" min="0" value="${durMin}">
+        </label>
+        <label>Timer — s
+          <input type="number" id="f-sec" inputmode="numeric" min="0" max="59" value="${durSec}">
+        </label>
+      </div>
+      <div class="form-grid">
+        <label>Par côté / jambe
+          <select id="f-perside">
+            <option value="" ${!exo.perSide ? "selected" : ""}>Non</option>
+            <option value="côté" ${exo.perSide === "côté" ? "selected" : ""}>Par côté</option>
+            <option value="jambe" ${exo.perSide === "jambe" ? "selected" : ""}>Par jambe</option>
+            <option value="bras" ${exo.perSide === "bras" ? "selected" : ""}>Par bras</option>
+          </select>
+        </label>
+        <label>Note
+          <input type="text" id="f-note" value="${escapeAttr(exo.note || "")}" placeholder="ex. 20 à 30 min">
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="tbtn main" id="f-save">Enregistrer</button>
+        <button class="tbtn small" id="f-cancel">Annuler</button>
+      </div>
+      ${isNew ? "" : `<button class="big-action danger-ghost" id="f-delete">Supprimer cet exercice</button>`}
+    </div>`;
+}
+
+function bindEditorEvents() {
+  app.querySelectorAll(".chip").forEach((c) => {
+    c.addEventListener("click", () => {
+      editDay = c.dataset.day === "daily" ? "daily" : parseInt(c.dataset.day, 10);
+      editingExoId = null;
+      render();
+    });
+  });
+
+  const titleInput = document.getElementById("day-title-input");
+  if (titleInput && editDay !== "daily") {
+    titleInput.addEventListener("change", () => {
+      program.days[editDay].title = titleInput.value.trim();
+      saveProgram();
+    });
+  }
+
+  app.querySelectorAll(".edit-row").forEach((row) => {
+    row.addEventListener("click", (ev) => {
+      if (ev.target.closest("[data-move]")) return;
+      editingExoId = row.dataset.edit;
+      render();
+    });
+  });
+
+  app.querySelectorAll("[data-move]").forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const list = editedList();
+      const idx = parseInt(btn.dataset.idx, 10);
+      const to = btn.dataset.move === "up" ? idx - 1 : idx + 1;
+      if (to < 0 || to >= list.length) return;
+      [list[idx], list[to]] = [list[to], list[idx]];
+      saveProgram();
+      render();
+    });
+  });
+
+  const addBtn = document.getElementById("add-exo");
+  if (addBtn) addBtn.addEventListener("click", () => { editingExoId = "new"; render(); });
+
+  const resetBtn = document.getElementById("reset-day");
+  if (resetBtn) resetBtn.addEventListener("click", () => {
+    const label = editDay === "daily" ? "la base quotidienne" : DAY_NAMES[editDay];
+    if (!confirm(`Réinitialiser ${label} avec le programme d'origine ?`)) return;
+    if (editDay === "daily") program.daily = structuredClone(DEFAULT_PROGRAM.daily);
+    else program.days[editDay] = structuredClone(DEFAULT_PROGRAM.days[editDay]);
+    editingExoId = null;
+    saveProgram();
+    render();
+  });
+
+  const saveBtn = document.getElementById("f-save");
+  if (saveBtn) saveBtn.addEventListener("click", saveExoForm);
+  const cancelBtn = document.getElementById("f-cancel");
+  if (cancelBtn) cancelBtn.addEventListener("click", () => { editingExoId = null; render(); });
+  const deleteBtn = document.getElementById("f-delete");
+  if (deleteBtn) deleteBtn.addEventListener("click", () => {
+    if (!confirm("Supprimer cet exercice ?")) return;
+    const list = editedList();
+    const idx = list.findIndex((e) => e.id === editingExoId);
+    if (idx >= 0) list.splice(idx, 1);
+    editingExoId = null;
+    saveProgram();
+    render();
+  });
+}
+
+function saveExoForm() {
+  const name = document.getElementById("f-name").value.trim();
+  if (!name) { alert("Le nom est obligatoire."); return; }
+  const sets = parseInt(document.getElementById("f-sets").value, 10);
+  const repsRaw = document.getElementById("f-reps").value.trim();
+  const min = parseInt(document.getElementById("f-min").value, 10) || 0;
+  const sec = parseInt(document.getElementById("f-sec").value, 10) || 0;
+  const perSide = document.getElementById("f-perside").value;
+  const note = document.getElementById("f-note").value.trim();
+
+  const exo = { id: editingExoId === "new" ? "u" + Date.now().toString(36) : editingExoId, name };
+  if (sets > 0) exo.sets = sets;
+  if (repsRaw) exo.reps = /^\d+$/.test(repsRaw) ? parseInt(repsRaw, 10) : repsRaw;
+  const duration = min * 60 + sec;
+  if (duration > 0) exo.duration = duration;
+  if (perSide) exo.perSide = perSide;
+  if (note) exo.note = note;
+
+  const list = editedList();
+  if (editingExoId === "new") {
+    list.push(exo);
+  } else {
+    const idx = list.findIndex((e) => e.id === editingExoId);
+    if (idx >= 0) list[idx] = exo;
+  }
+  editingExoId = null;
+  saveProgram();
+  render();
 }
 
 // ---------- Échappement ----------

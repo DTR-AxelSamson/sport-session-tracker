@@ -36,7 +36,10 @@ grandes zones tactiles, saisie < 15 s.
       bip (WebAudio) à la fin. Un seul timer actif à la fois.
 - [x] Snapshot du plan du jour dans la session (`planned` + `title`) pour que
       l'historique reste correct après modification du programme.
-- [ ] Édition du programme à la maille jour (ajout/suppression/modif d'exercices).
+- [x] Édition du programme à la maille jour : chips Quotidien + Lun→Dim, titre du
+      jour éditable, formulaire par exercice (nom, séries, répétitions libres,
+      timer min/s, par côté/jambe/bras, note), ajout, suppression, réordonnancement
+      (↑/↓), réinitialisation d'un jour au programme d'origine.
 - [ ] Historique des sessions passées.
 - [ ] Export / import JSON.
 
