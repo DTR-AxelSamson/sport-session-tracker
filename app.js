@@ -213,12 +213,12 @@ const DEFAULT_PROGRAM = {
 };
 
 // ---------- Programme par défaut — Profil 2 ----------
-// Renfo 100 % poids du corps (mobilier autorisé : chaise, table, marche),
-// genoux sensibles : aucune pliométrie, aucun saut, amplitudes contrôlées.
-// Pas de cardio (course gérée à côté). Lun = jambes, Mer = haut + abdos,
-// Ven = complet ; les autres jours restent libres.
-
-const KNEE_RULE = "Règle genoux : aucune douleur pendant la séance ni le lendemain. Une gêne qui monte → réduis l'amplitude ou remplace par pont fessier / relevé jambe tendue. Tout au poids du corps, sans saut.";
+// Renfo 100 % poids du corps (mobilier autorisé : chaise, table — pas de
+// marche d'escalier), aucun saut ni pliométrie, pas de cardio (course gérée
+// à côté). Genou douloureux : on le RENFORCE progressivement (isométrie →
+// tempo lent → unilatéral), on ne l'évite pas.
+// Séances calibrées ≤ 10 min (tempo des répétitions + récup 20–30 s comptés) :
+// Lun = jambes, Mer = haut du corps + abdos (volume réduit), Ven = jambes + tronc.
 
 const P2_REST = (id) => ({
   title: "Repos (course libre)",
@@ -227,48 +227,46 @@ const P2_REST = (id) => ({
   ],
 });
 
+const P2_PACE_HINT = "Enchaîne les exercices, récup 20–30 s max entre les séries.";
+
 const DEFAULT_PROGRAM_P2 = {
   activeBlock: "1",
   daily: { title: "Chaque jour", exercises: [] },
   blocks: {
     "1": {
       name: "Bloc 1 — Reprise (sem. 1–4)",
-      gate: KNEE_RULE,
+      gate: "On renforce le genou, on ne l'évite pas : l'isométrie (chaise au mur) et les descentes lentes chargent le tendon en douceur. Une gêne ≤ 3/10 qui disparaît le lendemain est normale et utile ; au-delà, réduis l'amplitude — pas l'exercice. Tout au poids du corps, sans saut.",
       days: {
         1: {
-          title: "Jambes & fessiers",
+          title: "Jambes — force",
+          hint: "≈ 9 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h1l1", name: "Pont fessier", sets: 3, reps: 15, note: "expire en montant, fessiers serrés en haut" },
-            { id: "h1l2", name: "Chaise au mur", sets: 3, duration: 30, note: "dos plaqué, genoux ≤ 90°, sans douleur" },
-            { id: "h1l3", name: "Fente arrière statique", sets: 2, reps: 8, perSide: "jambe", note: "amplitude confortable, genou avant au-dessus de la cheville" },
-            { id: "h1l4", name: "Soulevé de terre roumain une jambe (poids du corps)", sets: 2, reps: 8, perSide: "jambe", note: "dos neutre, fesses vers l'arrière" },
-            { id: "h1l5", name: "Relevé de jambe tendue, allongé", sets: 2, reps: 12, perSide: "jambe", note: "quadriceps sans plier le genou — protège les genoux" },
-            { id: "h1l6", name: "Montées de mollets lentes", sets: 3, reps: 15, note: "2 s de montée, 2 s de descente" },
+            { id: "h1l1", name: "Chaise au mur", sets: 3, duration: 30, note: "dos plaqué, cuisses vers la parallèle — l'isométrie renforce le tendon sans l'irriter" },
+            { id: "h1l2", name: "Squat sur chaise, descente 5 s", sets: 2, reps: 8, note: "toucher-repartir ; c'est la descente contrôlée qui fait le travail" },
+            { id: "h1l3", name: "Pont fessier", sets: 2, reps: 12, note: "expire en montant" },
+            { id: "h1l4", name: "Montées de mollets lentes", sets: 2, reps: 12, note: "2 s de montée, 2 s de descente" },
           ],
         },
         2: P2_REST("h1s1"),
         3: {
           title: "Haut du corps & abdos",
+          hint: "≈ 8 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h1u1", name: "Pompes (sur les genoux si besoin)", sets: 3, reps: 10, note: "corps gainé, coudes à ~45°" },
-            { id: "h1u2", name: "Rowing inversé sous une table solide", sets: 3, reps: 8, note: "tire les omoplates, corps droit" },
-            { id: "h1u3", name: "Pike push-up (épaules)", sets: 2, reps: 6, note: "hanches hautes, tête vers le sol" },
-            { id: "h1u4", name: "Dips sur chaise", sets: 2, reps: 8, note: "épaules basses, amplitude sans douleur" },
-            { id: "h1u5", name: "Planche", sets: 3, duration: 30 },
-            { id: "h1u6", name: "Dead bug", sets: 2, reps: 10, perSide: "côté", note: "bas du dos collé au sol" },
-            { id: "h1u7", name: "Superman", sets: 2, reps: 12, note: "pause 2 s en haut" },
+            { id: "h1u1", name: "Pompes (sur les genoux si besoin)", sets: 3, reps: 8, note: "corps gainé, coudes à ~45°" },
+            { id: "h1u2", name: "Rowing inversé sous une table solide", sets: 2, reps: 8, note: "tire les omoplates, corps droit" },
+            { id: "h1u3", name: "Planche", sets: 2, duration: 30 },
+            { id: "h1u4", name: "Dead bug", sets: 2, reps: 8, perSide: "côté", note: "bas du dos collé au sol" },
           ],
         },
         4: P2_REST("h1s2"),
         5: {
-          title: "Séance complète",
+          title: "Jambes + tronc",
+          hint: "≈ 9 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h1f1", name: "Pont fessier une jambe", sets: 2, reps: 10, perSide: "jambe" },
+            { id: "h1f1", name: "Fente arrière statique", sets: 2, reps: 8, perSide: "jambe", note: "contrôlée ; le genou travaille, c'est le but — reste sous 3/10 de gêne" },
             { id: "h1f2", name: "Chaise au mur", sets: 2, duration: 40 },
-            { id: "h1f3", name: "Pompes", sets: 3, reps: 10 },
-            { id: "h1f4", name: "Rowing inversé sous une table", sets: 2, reps: 10 },
-            { id: "h1f5", name: "Gainage latéral sur les genoux", sets: 2, duration: 20, perSide: "côté" },
-            { id: "h1f6", name: "Bird-dog", sets: 2, reps: 8, perSide: "côté", note: "pause 2 s en extension" },
+            { id: "h1f3", name: "Gainage latéral sur les genoux", sets: 2, duration: 20, perSide: "côté" },
+            { id: "h1f4", name: "Superman", sets: 2, reps: 12, note: "pause 2 s en haut" },
           ],
         },
         6: P2_REST("h1s3"),
@@ -277,43 +275,37 @@ const DEFAULT_PROGRAM_P2 = {
     },
     "2": {
       name: "Bloc 2 — Progression (sem. 5–8)",
-      gate: "Feu vert : chaise au mur 3 × 45 s et fentes arrière sans aucune douleur au genou (pendant et le lendemain), 3 × 12 pompes propres. Sinon prolonge le bloc 1.",
+      gate: "Feu vert : chaise au mur 3 × 45 s et squats lents sans aggravation le lendemain. On ajoute amplitude et volume — un genou se renforce en étant chargé progressivement.",
       days: {
         1: {
-          title: "Jambes & fessiers",
+          title: "Jambes — force",
+          hint: "≈ 9 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h2l1", name: "Pont fessier une jambe", sets: 3, reps: 10, perSide: "jambe", note: "bassin de niveau" },
-            { id: "h2l2", name: "Chaise au mur", sets: 3, duration: 45 },
-            { id: "h2l3", name: "Fentes arrière alternées", sets: 3, reps: 10, perSide: "jambe", note: "contrôlées, sans impact" },
-            { id: "h2l4", name: "Soulevé de terre roumain une jambe", sets: 3, reps: 10, perSide: "jambe" },
-            { id: "h2l5", name: "Step-up lent sur une marche", sets: 2, reps: 10, perSide: "jambe", note: "marche basse, pousse dans le talon, redescends en 3 s" },
-            { id: "h2l6", name: "Montées de mollets une jambe", sets: 3, reps: 12, perSide: "jambe" },
+            { id: "h2l1", name: "Squat libre, descente 5 s", sets: 3, reps: 8, note: "la plus grande amplitude possible en restant sous 3/10 de gêne" },
+            { id: "h2l2", name: "Fentes arrière alternées", sets: 2, reps: 8, perSide: "jambe", note: "contrôlées, sans impact" },
+            { id: "h2l3", name: "Chaise au mur", sets: 2, duration: 45 },
           ],
         },
         2: P2_REST("h2s1"),
         3: {
           title: "Haut du corps & abdos",
+          hint: "≈ 9 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h2u1", name: "Pompes", sets: 4, reps: 12 },
-            { id: "h2u2", name: "Rowing inversé sous une table", sets: 3, reps: 10 },
-            { id: "h2u3", name: "Pike push-up", sets: 3, reps: 8 },
-            { id: "h2u4", name: "Dips sur chaise", sets: 3, reps: 10 },
-            { id: "h2u5", name: "Planche", sets: 3, duration: 45 },
-            { id: "h2u6", name: "Gainage latéral sur les pieds", sets: 2, duration: 25, perSide: "côté", note: "repasse aux genoux si la hanche tombe" },
-            { id: "h2u7", name: "Relevés de jambes, allongé", sets: 3, reps: 10, note: "bas du dos au sol" },
-            { id: "h2u8", name: "Mountain climbers lents", sets: 3, duration: 20, note: "sans saut : un pied après l'autre, contrôlé" },
+            { id: "h2u1", name: "Pompes", sets: 3, reps: 10 },
+            { id: "h2u2", name: "Rowing inversé sous une table", sets: 3, reps: 8 },
+            { id: "h2u3", name: "Planche", sets: 2, duration: 45 },
+            { id: "h2u4", name: "Hollow hold, genoux fléchis", sets: 2, duration: 15, note: "bas du dos plaqué au sol" },
           ],
         },
         4: P2_REST("h2s2"),
         5: {
-          title: "Séance complète",
+          title: "Jambes + tronc",
+          hint: "≈ 9–10 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h2f1", name: "Pont fessier une jambe", sets: 3, reps: 12, perSide: "jambe" },
-            { id: "h2f2", name: "Chaise au mur", sets: 2, duration: 60 },
-            { id: "h2f3", name: "Pompes prise serrée (triceps)", sets: 3, reps: 8 },
-            { id: "h2f4", name: "Rowing inversé sous une table", sets: 3, reps: 10 },
-            { id: "h2f5", name: "Bird-dog avec pause 3 s", sets: 3, reps: 8, perSide: "côté" },
-            { id: "h2f6", name: "Hollow hold (genoux fléchis)", sets: 3, duration: 15, note: "bas du dos plaqué au sol" },
+            { id: "h2f1", name: "Pont fessier une jambe", sets: 2, reps: 8, perSide: "jambe", note: "bassin de niveau" },
+            { id: "h2f2", name: "Fente arrière, descente lente", sets: 2, reps: 8, perSide: "jambe" },
+            { id: "h2f3", name: "Montées de mollets une jambe", sets: 2, reps: 10, perSide: "jambe" },
+            { id: "h2f4", name: "Gainage latéral sur les pieds", sets: 2, duration: 20, perSide: "côté", note: "repasse aux genoux si la hanche tombe" },
           ],
         },
         6: P2_REST("h2s3"),
@@ -322,43 +314,37 @@ const DEFAULT_PROGRAM_P2 = {
     },
     "3": {
       name: "Bloc 3 — Renforcement (sem. 9–12)",
-      gate: "Feu vert : chaise au mur 60 s, step-ups et fentes sans douleur, planche 60 s. Sinon prolonge le bloc 2 — tes genoux te remercieront.",
+      gate: "Feu vert : bloc 2 complet sans douleur qui s'installe. Place au travail sur une jambe : c'est lui qui blinde vraiment le genou et corrige les déséquilibres gauche/droite.",
       days: {
         1: {
-          title: "Jambes & fessiers",
+          title: "Jambes — force",
+          hint: "≈ 9 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h3l1", name: "Squat sur chaise, descente 3 s", sets: 3, reps: 10, note: "toucher-repartir, arrête-toi avant toute douleur" },
-            { id: "h3l2", name: "Chaise au mur", sets: 3, duration: 60 },
-            { id: "h3l3", name: "Fentes arrière alternées", sets: 3, reps: 12, perSide: "jambe" },
-            { id: "h3l4", name: "Step-up lent sur une marche", sets: 3, reps: 10, perSide: "jambe" },
-            { id: "h3l5", name: "Soulevé de terre roumain une jambe", sets: 3, reps: 12, perSide: "jambe" },
-            { id: "h3l6", name: "Montées de mollets une jambe", sets: 3, reps: 15, perSide: "jambe" },
+            { id: "h3l1", name: "Squat une jambe assisté, sur chaise", sets: 3, reps: 5, perSide: "jambe", note: "toucher-repartir, aide-toi des mains au besoin" },
+            { id: "h3l2", name: "Fentes arrière", sets: 2, reps: 10, perSide: "jambe" },
+            { id: "h3l3", name: "Chaise au mur, poids sur une jambe", sets: 2, duration: 15, perSide: "jambe", note: "l'autre pied en léger appui" },
           ],
         },
         2: P2_REST("h3s1"),
         3: {
           title: "Haut du corps & abdos",
+          hint: "≈ 8 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h3u1", name: "Pompes déclinées (pieds sur une chaise)", sets: 3, reps: 10 },
-            { id: "h3u2", name: "Pompes diamant", sets: 2, reps: 8 },
-            { id: "h3u3", name: "Rowing inversé, corps plus horizontal", sets: 3, reps: 12, note: "plus tu es horizontal, plus c'est dur" },
-            { id: "h3u4", name: "Pike push-up pieds surélevés", sets: 3, reps: 8 },
-            { id: "h3u5", name: "Planche avec touche d'épaule alternée", sets: 3, reps: "10 touches", note: "le bassin ne bouge pas" },
-            { id: "h3u6", name: "Gainage latéral + levée de jambe", sets: 2, reps: 8, perSide: "côté" },
-            { id: "h3u7", name: "Hollow hold", sets: 3, duration: 20 },
-            { id: "h3u8", name: "Relevés de jambes, allongé", sets: 3, reps: 12 },
+            { id: "h3u1", name: "Pompes déclinées (pieds sur une chaise)", sets: 3, reps: 8 },
+            { id: "h3u2", name: "Rowing inversé, corps plus horizontal", sets: 3, reps: 8, note: "plus tu es horizontal, plus c'est dur" },
+            { id: "h3u3", name: "Planche avec touche d'épaule alternée", sets: 2, reps: "10 touches", note: "le bassin ne bouge pas" },
+            { id: "h3u4", name: "Hollow hold", sets: 2, duration: 20 },
           ],
         },
         4: P2_REST("h3s2"),
         5: {
-          title: "Séance complète",
+          title: "Jambes + tronc",
+          hint: "≈ 9–10 min. " + P2_PACE_HINT,
           exercises: [
-            { id: "h3f1", name: "Squat sur chaise, descente 3 s", sets: 3, reps: 12 },
-            { id: "h3f2", name: "Pont fessier une jambe, tempo lent", sets: 3, reps: 12, perSide: "jambe" },
-            { id: "h3f3", name: "Pompes déclinées", sets: 3, reps: 10 },
-            { id: "h3f4", name: "Dips sur chaise, pieds éloignés", sets: 3, reps: 10 },
-            { id: "h3f5", name: "Bear crawl (genoux à 2 cm du sol)", sets: 3, duration: 20, note: "déplacement contrôlé, silencieux" },
-            { id: "h3f6", name: "Planche", sets: 3, duration: 60 },
+            { id: "h3f1", name: "Split squat, pied arrière sur une chaise", sets: 2, reps: 8, perSide: "jambe", note: "descente contrôlée — le plus exigeant pour le genou, garde la règle des 3/10" },
+            { id: "h3f2", name: "Pont fessier une jambe, tempo lent", sets: 2, reps: 10, perSide: "jambe" },
+            { id: "h3f3", name: "Montées de mollets une jambe", sets: 2, reps: 12, perSide: "jambe" },
+            { id: "h3f4", name: "Gainage latéral + levée de jambe", sets: 2, reps: 6, perSide: "côté" },
           ],
         },
         6: P2_REST("h3s3"),

@@ -128,6 +128,16 @@ grandes zones tactiles, saisie < 15 s.
       Export JSON v3 = les deux profils + suivi course ; import rétrocompatible
       (v1/v2 plat → profil 1). Cache SW `sst-v5`.
 
+- [x] Programme P2 v2 (retours utilisateur) : séances ≤ 10 min (budget temps
+      par séance : tempo des reps + récup 20–30 s, estimation « ≈ X min » dans
+      le hint du jour), moins de haut du corps (1 séance/sem au lieu de 2, à
+      volume réduit — 2 séances jambes/sem), pas d'exercice avec une marche
+      (step-ups supprimés), et surtout : le genou est RENFORCÉ, pas évité —
+      progression rééducation isométrie (chaise au mur) → tempo lent (squat
+      descente 5 s) → unilatéral (squat une jambe assisté, split squat), règle
+      des 3/10 de gêne acceptable dans les gates. 3–4 exercices par séance max.
+      Cache SW `sst-v6`.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).
