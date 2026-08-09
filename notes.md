@@ -138,6 +138,11 @@ grandes zones tactiles, saisie < 15 s.
       des 3/10 de gêne acceptable dans les gates. 3–4 exercices par séance max.
       Cache SW `sst-v6`.
 
+- [x] Section quotidienne P2 « Chaque jour — optionnel » : chaise au mur 45 s,
+      squats lents ×10, pompes 10–15, planche 1 min. Migration : si la section
+      quotidienne P2 stockée est vide (jamais personnalisée, l'ancien défaut
+      était vide), on la remplit avec ces exercices. Cache SW `sst-v7`.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).

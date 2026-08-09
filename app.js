@@ -231,7 +231,16 @@ const P2_PACE_HINT = "Enchaîne les exercices, récup 20–30 s max entre les s�
 
 const DEFAULT_PROGRAM_P2 = {
   activeBlock: "1",
-  daily: { title: "Chaque jour", exercises: [] },
+  // Tout est optionnel : un peu de tout, à caser quand ça arrange.
+  daily: {
+    title: "Chaque jour — optionnel",
+    exercises: [
+      { id: "hd1", name: "Chaise au mur", duration: 45, note: "renfo genou en douceur, n'importe quand dans la journée" },
+      { id: "hd2", name: "Squats lents", reps: 10, note: "descente 3–5 s, amplitude confortable — renfo genou" },
+      { id: "hd3", name: "Pompes", reps: "10–15", note: "une seule série propre" },
+      { id: "hd4", name: "Planche", duration: 60, note: "abdos — bassin neutre, tu respires" },
+    ],
+  },
   blocks: {
     "1": {
       name: "Bloc 1 — Reprise (sem. 1–4)",
@@ -553,6 +562,12 @@ function loadProfileData() {
   // quotidienne n'ont pas de champ daily.
   if (!program.daily) {
     program.daily = structuredClone(defaultProgram().daily);
+    saveProgram();
+  }
+  // Migration P2 : la section quotidienne était vide par défaut avant l'ajout
+  // des exercices optionnels — si elle n'a jamais été personnalisée, on la remplit.
+  if (currentProfile === "2" && program.daily.exercises.length === 0) {
+    program.daily = structuredClone(DEFAULT_PROGRAM_P2.daily);
     saveProgram();
   }
   sessions = loadJSON(profKey(LS_SESSIONS), {});
