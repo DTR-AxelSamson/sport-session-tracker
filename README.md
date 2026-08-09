@@ -8,6 +8,10 @@ la séance, grandes zones tactiles, saisie en quelques secondes.
 
 ## Fonctionnalités
 
+- **Deux profils** (bouton en haut à droite) : Profil 1 — renfo post-partum +
+  plan course 10 km ; Profil 2 — renfo poids du corps (genoux sensibles, sans
+  saut, sans matériel). Programmes et historiques indépendants.
+
 - **Renfo (séance du jour)** : exercices du jour selon le bloc actif du
   programme de renforcement (12 semaines en 3 blocs : fondations, charge,
   consolidation), coche à la carte (toute la carte est tactile), barre de

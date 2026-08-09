@@ -112,6 +112,22 @@ grandes zones tactiles, saisie < 15 s.
       l'app (statique dans le code), contrairement au programme de renfo.
       Cache SW bumpé `sst-v4`.
 
+- [x] Deux profils : Profil 1 (elle — renfo + course) / Profil 2 (lui — renfo
+      poids du corps, genoux sensibles). Bouton de bascule dans le header
+      (bleu = P1, vert = P2), persisté (`sst_profile`). Le profil 1 garde les
+      clés localStorage historiques (aucune migration des données existantes),
+      le profil 2 suffixe `_p2` (programme + sessions). L'onglet Course est
+      masqué en profil 2 (bascule depuis Course → retour sur Renfo).
+      Programme P2 : 3 blocs de 4 sem. (Reprise / Progression / Renforcement),
+      Lun jambes-fessiers, Mer haut du corps + abdos, Ven séance complète,
+      autres jours « Repos (course libre) » avec étirements optionnels.
+      Contraintes respectées : 100 % poids du corps (mobilier ok : chaise,
+      table, marche), aucun saut/pliométrie, genoux protégés (chaise au mur,
+      fentes arrière, relevé jambe tendue, step-up lent, règle « aucune douleur
+      pendant ni le lendemain » en gate de chaque bloc), pas de cardio.
+      Export JSON v3 = les deux profils + suivi course ; import rétrocompatible
+      (v1/v2 plat → profil 1). Cache SW `sst-v5`.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).

@@ -212,6 +212,162 @@ const DEFAULT_PROGRAM = {
   },
 };
 
+// ---------- Programme par défaut — Profil 2 ----------
+// Renfo 100 % poids du corps (mobilier autorisé : chaise, table, marche),
+// genoux sensibles : aucune pliométrie, aucun saut, amplitudes contrôlées.
+// Pas de cardio (course gérée à côté). Lun = jambes, Mer = haut + abdos,
+// Ven = complet ; les autres jours restent libres.
+
+const KNEE_RULE = "Règle genoux : aucune douleur pendant la séance ni le lendemain. Une gêne qui monte → réduis l'amplitude ou remplace par pont fessier / relevé jambe tendue. Tout au poids du corps, sans saut.";
+
+const P2_REST = (id) => ({
+  title: "Repos (course libre)",
+  exercises: [
+    { id, name: "Étirements / mobilité (optionnel)", duration: 300, note: "quadriceps, ischios, mollets, hanches" },
+  ],
+});
+
+const DEFAULT_PROGRAM_P2 = {
+  activeBlock: "1",
+  daily: { title: "Chaque jour", exercises: [] },
+  blocks: {
+    "1": {
+      name: "Bloc 1 — Reprise (sem. 1–4)",
+      gate: KNEE_RULE,
+      days: {
+        1: {
+          title: "Jambes & fessiers",
+          exercises: [
+            { id: "h1l1", name: "Pont fessier", sets: 3, reps: 15, note: "expire en montant, fessiers serrés en haut" },
+            { id: "h1l2", name: "Chaise au mur", sets: 3, duration: 30, note: "dos plaqué, genoux ≤ 90°, sans douleur" },
+            { id: "h1l3", name: "Fente arrière statique", sets: 2, reps: 8, perSide: "jambe", note: "amplitude confortable, genou avant au-dessus de la cheville" },
+            { id: "h1l4", name: "Soulevé de terre roumain une jambe (poids du corps)", sets: 2, reps: 8, perSide: "jambe", note: "dos neutre, fesses vers l'arrière" },
+            { id: "h1l5", name: "Relevé de jambe tendue, allongé", sets: 2, reps: 12, perSide: "jambe", note: "quadriceps sans plier le genou — protège les genoux" },
+            { id: "h1l6", name: "Montées de mollets lentes", sets: 3, reps: 15, note: "2 s de montée, 2 s de descente" },
+          ],
+        },
+        2: P2_REST("h1s1"),
+        3: {
+          title: "Haut du corps & abdos",
+          exercises: [
+            { id: "h1u1", name: "Pompes (sur les genoux si besoin)", sets: 3, reps: 10, note: "corps gainé, coudes à ~45°" },
+            { id: "h1u2", name: "Rowing inversé sous une table solide", sets: 3, reps: 8, note: "tire les omoplates, corps droit" },
+            { id: "h1u3", name: "Pike push-up (épaules)", sets: 2, reps: 6, note: "hanches hautes, tête vers le sol" },
+            { id: "h1u4", name: "Dips sur chaise", sets: 2, reps: 8, note: "épaules basses, amplitude sans douleur" },
+            { id: "h1u5", name: "Planche", sets: 3, duration: 30 },
+            { id: "h1u6", name: "Dead bug", sets: 2, reps: 10, perSide: "côté", note: "bas du dos collé au sol" },
+            { id: "h1u7", name: "Superman", sets: 2, reps: 12, note: "pause 2 s en haut" },
+          ],
+        },
+        4: P2_REST("h1s2"),
+        5: {
+          title: "Séance complète",
+          exercises: [
+            { id: "h1f1", name: "Pont fessier une jambe", sets: 2, reps: 10, perSide: "jambe" },
+            { id: "h1f2", name: "Chaise au mur", sets: 2, duration: 40 },
+            { id: "h1f3", name: "Pompes", sets: 3, reps: 10 },
+            { id: "h1f4", name: "Rowing inversé sous une table", sets: 2, reps: 10 },
+            { id: "h1f5", name: "Gainage latéral sur les genoux", sets: 2, duration: 20, perSide: "côté" },
+            { id: "h1f6", name: "Bird-dog", sets: 2, reps: 8, perSide: "côté", note: "pause 2 s en extension" },
+          ],
+        },
+        6: P2_REST("h1s3"),
+        0: P2_REST("h1s4"),
+      },
+    },
+    "2": {
+      name: "Bloc 2 — Progression (sem. 5–8)",
+      gate: "Feu vert : chaise au mur 3 × 45 s et fentes arrière sans aucune douleur au genou (pendant et le lendemain), 3 × 12 pompes propres. Sinon prolonge le bloc 1.",
+      days: {
+        1: {
+          title: "Jambes & fessiers",
+          exercises: [
+            { id: "h2l1", name: "Pont fessier une jambe", sets: 3, reps: 10, perSide: "jambe", note: "bassin de niveau" },
+            { id: "h2l2", name: "Chaise au mur", sets: 3, duration: 45 },
+            { id: "h2l3", name: "Fentes arrière alternées", sets: 3, reps: 10, perSide: "jambe", note: "contrôlées, sans impact" },
+            { id: "h2l4", name: "Soulevé de terre roumain une jambe", sets: 3, reps: 10, perSide: "jambe" },
+            { id: "h2l5", name: "Step-up lent sur une marche", sets: 2, reps: 10, perSide: "jambe", note: "marche basse, pousse dans le talon, redescends en 3 s" },
+            { id: "h2l6", name: "Montées de mollets une jambe", sets: 3, reps: 12, perSide: "jambe" },
+          ],
+        },
+        2: P2_REST("h2s1"),
+        3: {
+          title: "Haut du corps & abdos",
+          exercises: [
+            { id: "h2u1", name: "Pompes", sets: 4, reps: 12 },
+            { id: "h2u2", name: "Rowing inversé sous une table", sets: 3, reps: 10 },
+            { id: "h2u3", name: "Pike push-up", sets: 3, reps: 8 },
+            { id: "h2u4", name: "Dips sur chaise", sets: 3, reps: 10 },
+            { id: "h2u5", name: "Planche", sets: 3, duration: 45 },
+            { id: "h2u6", name: "Gainage latéral sur les pieds", sets: 2, duration: 25, perSide: "côté", note: "repasse aux genoux si la hanche tombe" },
+            { id: "h2u7", name: "Relevés de jambes, allongé", sets: 3, reps: 10, note: "bas du dos au sol" },
+            { id: "h2u8", name: "Mountain climbers lents", sets: 3, duration: 20, note: "sans saut : un pied après l'autre, contrôlé" },
+          ],
+        },
+        4: P2_REST("h2s2"),
+        5: {
+          title: "Séance complète",
+          exercises: [
+            { id: "h2f1", name: "Pont fessier une jambe", sets: 3, reps: 12, perSide: "jambe" },
+            { id: "h2f2", name: "Chaise au mur", sets: 2, duration: 60 },
+            { id: "h2f3", name: "Pompes prise serrée (triceps)", sets: 3, reps: 8 },
+            { id: "h2f4", name: "Rowing inversé sous une table", sets: 3, reps: 10 },
+            { id: "h2f5", name: "Bird-dog avec pause 3 s", sets: 3, reps: 8, perSide: "côté" },
+            { id: "h2f6", name: "Hollow hold (genoux fléchis)", sets: 3, duration: 15, note: "bas du dos plaqué au sol" },
+          ],
+        },
+        6: P2_REST("h2s3"),
+        0: P2_REST("h2s4"),
+      },
+    },
+    "3": {
+      name: "Bloc 3 — Renforcement (sem. 9–12)",
+      gate: "Feu vert : chaise au mur 60 s, step-ups et fentes sans douleur, planche 60 s. Sinon prolonge le bloc 2 — tes genoux te remercieront.",
+      days: {
+        1: {
+          title: "Jambes & fessiers",
+          exercises: [
+            { id: "h3l1", name: "Squat sur chaise, descente 3 s", sets: 3, reps: 10, note: "toucher-repartir, arrête-toi avant toute douleur" },
+            { id: "h3l2", name: "Chaise au mur", sets: 3, duration: 60 },
+            { id: "h3l3", name: "Fentes arrière alternées", sets: 3, reps: 12, perSide: "jambe" },
+            { id: "h3l4", name: "Step-up lent sur une marche", sets: 3, reps: 10, perSide: "jambe" },
+            { id: "h3l5", name: "Soulevé de terre roumain une jambe", sets: 3, reps: 12, perSide: "jambe" },
+            { id: "h3l6", name: "Montées de mollets une jambe", sets: 3, reps: 15, perSide: "jambe" },
+          ],
+        },
+        2: P2_REST("h3s1"),
+        3: {
+          title: "Haut du corps & abdos",
+          exercises: [
+            { id: "h3u1", name: "Pompes déclinées (pieds sur une chaise)", sets: 3, reps: 10 },
+            { id: "h3u2", name: "Pompes diamant", sets: 2, reps: 8 },
+            { id: "h3u3", name: "Rowing inversé, corps plus horizontal", sets: 3, reps: 12, note: "plus tu es horizontal, plus c'est dur" },
+            { id: "h3u4", name: "Pike push-up pieds surélevés", sets: 3, reps: 8 },
+            { id: "h3u5", name: "Planche avec touche d'épaule alternée", sets: 3, reps: "10 touches", note: "le bassin ne bouge pas" },
+            { id: "h3u6", name: "Gainage latéral + levée de jambe", sets: 2, reps: 8, perSide: "côté" },
+            { id: "h3u7", name: "Hollow hold", sets: 3, duration: 20 },
+            { id: "h3u8", name: "Relevés de jambes, allongé", sets: 3, reps: 12 },
+          ],
+        },
+        4: P2_REST("h3s2"),
+        5: {
+          title: "Séance complète",
+          exercises: [
+            { id: "h3f1", name: "Squat sur chaise, descente 3 s", sets: 3, reps: 12 },
+            { id: "h3f2", name: "Pont fessier une jambe, tempo lent", sets: 3, reps: 12, perSide: "jambe" },
+            { id: "h3f3", name: "Pompes déclinées", sets: 3, reps: 10 },
+            { id: "h3f4", name: "Dips sur chaise, pieds éloignés", sets: 3, reps: 10 },
+            { id: "h3f5", name: "Bear crawl (genoux à 2 cm du sol)", sets: 3, duration: 20, note: "déplacement contrôlé, silencieux" },
+            { id: "h3f6", name: "Planche", sets: 3, duration: 60 },
+          ],
+        },
+        6: P2_REST("h3s3"),
+        0: P2_REST("h3s4"),
+      },
+    },
+  },
+};
+
 // ---------- Plan course : 10 km sub-50 en 12 semaines ----------
 // Chaque semaine : 3 séances (mardi qualité, jeudi EF, dimanche sortie longue).
 // Étape : { name, duration? (=> timer), sets?, reps?, note? }.
@@ -379,9 +535,12 @@ const COURSE_PLAN = {
 
 // ---------- Stockage ----------
 // v2 : passage au programme en blocs (l'ancien programme v1 est remplacé).
+// Deux profils : le profil 1 garde les clés historiques (données existantes
+// conservées), le profil 2 suffixe "_p2". Le plan course est propre au profil 1.
 const LS_PROGRAM = "sst_program_v2";
 const LS_SESSIONS = "sst_sessions_v1";
 const LS_COURSE = "sst_course_v1";
+const LS_PROFILE = "sst_profile";
 
 function loadJSON(key, fallback) {
   try {
@@ -392,22 +551,33 @@ function loadJSON(key, fallback) {
   }
 }
 
+let currentProfile = localStorage.getItem(LS_PROFILE) === "2" ? "2" : "1";
+
+function profKeyFor(base, p) { return p === "1" ? base : base + "_p2"; }
+function profKey(base) { return profKeyFor(base, currentProfile); }
+function defaultProgram() { return currentProfile === "1" ? DEFAULT_PROGRAM : DEFAULT_PROGRAM_P2; }
+
+let program, sessions;
+
 // Clone profond du défaut : sans ça, éditer le programme mutait DEFAULT_PROGRAM
 // lui-même et « Réinitialiser ce jour » restaurait la version modifiée.
-let program = loadJSON(LS_PROGRAM, null) || structuredClone(DEFAULT_PROGRAM);
-let sessions = loadJSON(LS_SESSIONS, {});
+function loadProfileData() {
+  program = loadJSON(profKey(LS_PROGRAM), null) || structuredClone(defaultProgram());
+  // Migration : les programmes v2 stockés avant l'ajout de la section
+  // quotidienne n'ont pas de champ daily.
+  if (!program.daily) {
+    program.daily = structuredClone(defaultProgram().daily);
+    saveProgram();
+  }
+  sessions = loadJSON(profKey(LS_SESSIONS), {});
+}
+loadProfileData();
+
 // Suivi course : { week: index 0–11 de la semaine affichée, checked: { "w-s-e": ts } }
 let courseState = loadJSON(LS_COURSE, { week: 0, checked: {} });
 
-// Migration : les programmes v2 stockés avant l'ajout de la section
-// quotidienne n'ont pas de champ daily.
-if (!program.daily) {
-  program.daily = structuredClone(DEFAULT_PROGRAM.daily);
-  saveProgram();
-}
-
-function saveProgram() { localStorage.setItem(LS_PROGRAM, JSON.stringify(program)); }
-function saveSessions() { localStorage.setItem(LS_SESSIONS, JSON.stringify(sessions)); }
+function saveProgram() { localStorage.setItem(profKey(LS_PROGRAM), JSON.stringify(program)); }
+function saveSessions() { localStorage.setItem(profKey(LS_SESSIONS), JSON.stringify(sessions)); }
 function saveCourse() { localStorage.setItem(LS_COURSE, JSON.stringify(courseState)); }
 
 // ---------- Helpers ----------
@@ -913,8 +1083,8 @@ function renderProgramEditor() {
     <button class="big-action" id="export-json">⬇ Exporter les données (JSON)</button>
     <button class="big-action" id="import-json">⬆ Importer des données (JSON)</button>
     <input type="file" id="import-file" accept=".json,application/json" hidden>
-    <p class="data-hint">L'export contient le programme et tout l'historique.
-    L'import remplace les données actuelles.</p>`;
+    <p class="data-hint">L'export contient les deux profils (programmes + historiques)
+    et le suivi course. L'import remplace les données actuelles.</p>`;
 
   app.innerHTML = html;
   bindEditorEvents();
@@ -934,12 +1104,23 @@ function bindDataEvents() {
 }
 
 function exportJSON() {
+  const profiles = {};
+  for (const p of ["1", "2"]) {
+    profiles[p] = p === currentProfile
+      ? { program, sessions }
+      : {
+          // Profil jamais modifié : rien en localStorage, on exporte son défaut
+          program: loadJSON(profKeyFor(LS_PROGRAM, p), null)
+            || structuredClone(p === "1" ? DEFAULT_PROGRAM : DEFAULT_PROGRAM_P2),
+          sessions: loadJSON(profKeyFor(LS_SESSIONS, p), {}),
+        };
+  }
   const data = {
     app: "sport-session-tracker",
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
-    program: program,
-    sessions: sessions,
+    activeProfile: currentProfile,
+    profiles: profiles,
     course: courseState,
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -980,21 +1161,37 @@ function importJSON(file) {
       alert("Fichier illisible : ce n'est pas du JSON valide.");
       return;
     }
-    const normalized = normalizeProgram(data.program);
-    const hasSessions = data.sessions && typeof data.sessions === "object";
+    const hasProfiles = data.profiles && typeof data.profiles === "object";
     const hasCourse = data.course && typeof data.course.checked === "object";
-    if (!normalized && !hasSessions && !hasCourse) {
-      alert("Ce fichier ne contient ni programme, ni sessions, ni suivi course reconnus.");
+    // Anciens formats (v1/v2) : programme + sessions à plat → profil 1.
+    const flat = !hasProfiles ? {
+      program: normalizeProgram(data.program),
+      sessions: data.sessions && typeof data.sessions === "object" ? data.sessions : null,
+    } : null;
+
+    if (!hasProfiles && !hasCourse && !(flat && (flat.program || flat.sessions))) {
+      alert("Ce fichier ne contient ni profils, ni programme, ni suivi course reconnus.");
       return;
     }
-    const parts = [
-      normalized ? "le programme" : null,
-      hasSessions ? "l'historique" : null,
-      hasCourse ? "le suivi course" : null,
-    ].filter(Boolean).join(" et ");
-    if (!confirm(`Importer ${parts} ? Les données actuelles seront remplacées.`)) return;
-    if (normalized) { program = normalized; saveProgram(); }
-    if (hasSessions) { sessions = data.sessions; saveSessions(); }
+    const what = hasProfiles ? "les données des deux profils" : "les données (vers le profil 1)";
+    if (!confirm(`Importer ${what}${hasCourse ? " et le suivi course" : ""} ? Les données actuelles seront remplacées.`)) return;
+
+    if (hasProfiles) {
+      for (const p of ["1", "2"]) {
+        const prof = data.profiles[p];
+        if (!prof) continue;
+        const prog = normalizeProgram(prof.program);
+        if (prog) localStorage.setItem(profKeyFor(LS_PROGRAM, p), JSON.stringify(prog));
+        if (prof.sessions && typeof prof.sessions === "object") {
+          localStorage.setItem(profKeyFor(LS_SESSIONS, p), JSON.stringify(prof.sessions));
+        }
+      }
+      loadProfileData();
+    } else if (flat) {
+      if (flat.program) localStorage.setItem(profKeyFor(LS_PROGRAM, "1"), JSON.stringify(flat.program));
+      if (flat.sessions) localStorage.setItem(profKeyFor(LS_SESSIONS, "1"), JSON.stringify(flat.sessions));
+      loadProfileData();
+    }
     if (hasCourse) { courseState = data.course; saveCourse(); }
     editingExoId = null;
     render();
@@ -1103,9 +1300,9 @@ function bindEditorEvents() {
   if (resetBtn) resetBtn.addEventListener("click", () => {
     if (editDay === "daily") {
       if (!confirm("Réinitialiser la section quotidienne avec le programme d'origine ?")) return;
-      program.daily = structuredClone(DEFAULT_PROGRAM.daily);
+      program.daily = structuredClone(defaultProgram().daily);
     } else {
-      const defBlock = DEFAULT_PROGRAM.blocks[program.activeBlock];
+      const defBlock = defaultProgram().blocks[program.activeBlock];
       if (!defBlock || !defBlock.days[editDay]) {
         alert("Pas de version d'origine pour ce jour dans ce bloc.");
         return;
@@ -1178,6 +1375,35 @@ document.querySelectorAll(".tab").forEach((btn) => {
     render();
   });
 });
+
+// ---------- Profils ----------
+const profileBtn = document.getElementById("profile-btn");
+
+function updateProfileUI() {
+  profileBtn.textContent = "Profil " + currentProfile;
+  profileBtn.classList.toggle("p2", currentProfile === "2");
+  // Le plan course appartient au profil 1
+  document.querySelector('[data-tab="course"]').style.display = currentProfile === "2" ? "none" : "";
+}
+
+function setProfile(p) {
+  currentProfile = p;
+  localStorage.setItem(LS_PROFILE, p);
+  stopTicking();
+  timer = null;
+  editingExoId = null;
+  editDay = null;
+  loadProfileData();
+  if (currentProfile === "2" && currentTab === "course") {
+    currentTab = "today";
+    document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("active", b.dataset.tab === "today"));
+  }
+  updateProfileUI();
+  render();
+}
+
+profileBtn.addEventListener("click", () => setProfile(currentProfile === "1" ? "2" : "1"));
+updateProfileUI();
 
 render();
 
