@@ -150,6 +150,16 @@ grandes zones tactiles, saisie < 15 s.
       remplacé, sauf si l'exercice a été personnalisé (test sur le nom).
       Matériel du P2 désormais : poids du corps + haltères 5 kg. SW `sst-v8`.
 
+- [x] P1 sans matériel : 11 exercices à élastique/poids remplacés par des
+      équivalents poids du corps (rowing élastique → bird-dog et variantes,
+      portés valise → marche sur place gainée avec timer, charnière → au mur,
+      pallof → dead bug et variantes, SDT roumain → good morning, hip thrust →
+      pont fessier au sol, SDT une jambe → équilibre + charnière, fente
+      marchée → fente arrière), volumes conservés. Migration commune
+      `migrateSwappedExercises` (P1 + P2) : remplace par id si le nom stocké
+      correspond encore à l'ancien défaut, conserve les personnalisations.
+      SW `sst-v9`.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).
