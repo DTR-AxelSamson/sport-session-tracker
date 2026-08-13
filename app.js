@@ -1000,63 +1000,114 @@ function courseStepCard(step, key) {
     </div>`;
 }
 
-// ---------- Historique ----------
-let expandedDates = new Set();
+// ---------- Historique : calendrier mensuel ----------
+let histYM = null; // { y, m } du mois affiché ; null = mois courant
+let histSelected = null; // dateKey du jour sélectionné, ou null
+
+function sessionPct(key) {
+  const s = sessions[key];
+  if (!s) return null;
+  const done = Object.keys(s.checked || {}).length;
+  if (!done) return null;
+  const total = Math.max((s.planned || []).length, done);
+  return { pct: Math.round((100 * done) / total), done, total };
+}
 
 function renderHistory() {
+  const now = new Date();
+  if (!histYM) histYM = { y: now.getFullYear(), m: now.getMonth() };
+  const { y, m } = histYM;
+  const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
+  const monthLabel = new Date(y, m, 1).toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+
   dayTitle.textContent = "Historique";
   daySubtitle.textContent = "";
 
+  const startOffset = (new Date(y, m, 1).getDay() + 6) % 7; // lundi = colonne 0
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
   const tKey = todayKey();
-  const dates = Object.keys(sessions)
-    .filter((k) => Object.keys(sessions[k].checked || {}).length > 0)
-    .sort()
-    .reverse();
 
-  if (!dates.length) {
-    app.innerHTML = `<div class="empty">Aucune session enregistrée pour l'instant.<br>Coche des exercices dans l'onglet Séance !</div>`;
-    return;
+  // Statistiques du mois
+  let sessCount = 0, pctSum = 0, fullCount = 0;
+
+  let cellsHtml = "";
+  for (const dow of ["L", "M", "M", "J", "V", "S", "D"]) {
+    cellsHtml += `<div class="cal-dow">${dow}</div>`;
+  }
+  for (let i = 0; i < startOffset; i++) cellsHtml += `<div class="cal-empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const stat = sessionPct(key);
+    if (stat) { sessCount++; pctSum += stat.pct; if (stat.pct === 100) fullCount++; }
+    const classes = ["cal-cell"];
+    if (key === tKey) classes.push("today");
+    if (key > tKey) classes.push("future");
+    if (stat && stat.pct === 100) classes.push("full");
+    if (histSelected === key) classes.push("selected");
+    // Fond vert d'autant plus marqué que la complétion est haute
+    const style = stat ? `style="background:rgba(62,207,110,${(0.10 + 0.30 * stat.pct / 100).toFixed(2)})"` : "";
+    cellsHtml += `
+      <button class="${classes.join(" ")}" ${stat ? `data-key="${key}"` : ""} ${style}>
+        <span class="num">${d}</span>
+        <span class="pct">${stat ? (stat.pct === 100 ? "✓" : stat.pct + "%") : ""}</span>
+      </button>`;
   }
 
-  app.innerHTML = dates.map((key) => {
-    const s = sessions[key];
-    const doneCount = Object.keys(s.checked).length;
+  let html = `
+    <div class="cal-nav">
+      <button class="cal-arrow" id="cal-prev">‹</button>
+      <div class="cal-month">${monthLabel}</div>
+      <button class="cal-arrow" id="cal-next" ${isCurrentMonth ? "disabled" : ""}>›</button>
+    </div>
+    <div class="cal-summary">${sessCount
+      ? `${sessCount} séance${sessCount > 1 ? "s" : ""} · ${fullCount} complète${fullCount > 1 ? "s" : ""} · moyenne ${Math.round(pctSum / sessCount)} %`
+      : "Aucune séance ce mois-ci"}</div>
+    <div class="cal-grid">${cellsHtml}</div>`;
+
+  // Détail du jour sélectionné
+  const sel = histSelected && histSelected.startsWith(`${y}-${String(m + 1).padStart(2, "0")}`) ? histSelected : null;
+  const stat = sel ? sessionPct(sel) : null;
+  if (sel && stat) {
+    const s = sessions[sel];
     const planned = s.planned || Object.keys(s.names || {}).map((id) => ({ id, name: s.names[id] }));
-    const total = Math.max(planned.length, doneCount);
-    const d = new Date(key + "T12:00:00");
-    const label = key === tKey
-      ? "Aujourd'hui"
-      : d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
-    const pct = total ? Math.round((100 * doneCount) / total) : 0;
-    const open = expandedDates.has(key);
-
-    let detail = "";
-    if (open) {
-      detail = `<div class="hist-detail">` + planned.map((p) => {
-        const done = !!s.checked[p.id];
-        return `<div class="hist-exo ${done ? "done" : ""}">${done ? "✓" : "○"} ${escapeHtml(p.name)}</div>`;
-      }).join("") + `</div>`;
-    }
-
-    return `
-      <div class="hist-card ${pct === 100 ? "complete" : ""}" data-date="${key}">
+    const d = new Date(sel + "T12:00:00");
+    const label = sel === tKey ? "Aujourd'hui" : d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+    html += `
+      <div class="hist-card ${stat.pct === 100 ? "complete" : ""}">
         <div class="hist-head">
           <div class="hist-main">
             <div class="name">${label}${s.title ? ` — ${escapeHtml(s.title)}` : ""}</div>
-            <div class="meta">${doneCount} / ${total} exercices</div>
+            <div class="meta">${stat.done} / ${stat.total} exercices</div>
           </div>
-          <div class="hist-pct">${pct === 100 ? "✓" : pct + "%"}</div>
+          <div class="hist-pct">${stat.pct === 100 ? "✓" : stat.pct + "%"}</div>
         </div>
-        <div class="progress-bar"><div style="width:${pct}%"></div></div>
-        ${detail}
+        <div class="progress-bar"><div style="width:${stat.pct}%"></div></div>
+        <div class="hist-detail">${planned.map((p) => {
+          const done = !!s.checked[p.id];
+          return `<div class="hist-exo ${done ? "done" : ""}">${done ? "✓" : "○"} ${escapeHtml(p.name)}</div>`;
+        }).join("")}</div>
       </div>`;
-  }).join("");
+  } else if (sessCount) {
+    html += `<p class="data-hint">Touche un jour coloré pour voir le détail de la séance.</p>`;
+  }
 
-  app.querySelectorAll(".hist-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      const key = card.dataset.date;
-      if (expandedDates.has(key)) expandedDates.delete(key);
-      else expandedDates.add(key);
+  app.innerHTML = html;
+
+  document.getElementById("cal-prev").addEventListener("click", () => {
+    histYM = m === 0 ? { y: y - 1, m: 11 } : { y, m: m - 1 };
+    histSelected = null;
+    render();
+  });
+  const nextBtn = document.getElementById("cal-next");
+  if (!nextBtn.disabled) nextBtn.addEventListener("click", () => {
+    histYM = m === 11 ? { y: y + 1, m: 0 } : { y, m: m + 1 };
+    histSelected = null;
+    render();
+  });
+
+  app.querySelectorAll(".cal-cell[data-key]").forEach((cell) => {
+    cell.addEventListener("click", () => {
+      histSelected = histSelected === cell.dataset.key ? null : cell.dataset.key;
       render();
     });
   });
