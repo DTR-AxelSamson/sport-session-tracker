@@ -213,7 +213,7 @@ const DEFAULT_PROGRAM = {
 };
 
 // ---------- Programme par défaut — Profil 2 ----------
-// Renfo 100 % poids du corps (mobilier autorisé : chaise, table — pas de
+// Renfo poids du corps + haltères de 5 kg (mobilier : chaise ok, pas de
 // marche d'escalier), aucun saut ni pliométrie, pas de cardio (course gérée
 // à côté). Genou douloureux : on le RENFORCE progressivement (isométrie →
 // tempo lent → unilatéral), on ne l'évite pas.
@@ -244,7 +244,7 @@ const DEFAULT_PROGRAM_P2 = {
   blocks: {
     "1": {
       name: "Bloc 1 — Reprise (sem. 1–4)",
-      gate: "On renforce le genou, on ne l'évite pas : l'isométrie (chaise au mur) et les descentes lentes chargent le tendon en douceur. Une gêne ≤ 3/10 qui disparaît le lendemain est normale et utile ; au-delà, réduis l'amplitude — pas l'exercice. Tout au poids du corps, sans saut.",
+      gate: "On renforce le genou, on ne l'évite pas : l'isométrie (chaise au mur) et les descentes lentes chargent le tendon en douceur. Une gêne ≤ 3/10 qui disparaît le lendemain est normale et utile ; au-delà, réduis l'amplitude — pas l'exercice. Poids du corps + haltères de 5 kg, sans saut.",
       days: {
         1: {
           title: "Jambes — force",
@@ -262,7 +262,7 @@ const DEFAULT_PROGRAM_P2 = {
           hint: "≈ 8 min. " + P2_PACE_HINT,
           exercises: [
             { id: "h1u1", name: "Pompes (sur les genoux si besoin)", sets: 3, reps: 8, note: "corps gainé, coudes à ~45°" },
-            { id: "h1u2", name: "Rowing inversé sous une table solide", sets: 2, reps: 8, note: "tire les omoplates, corps droit" },
+            { id: "h1u2", name: "Rowing haltères, buste penché", sets: 2, reps: 12, note: "5 kg, buste penché à ~45°, dos neutre — tire vers les poches arrière" },
             { id: "h1u3", name: "Planche", sets: 2, duration: 30 },
             { id: "h1u4", name: "Dead bug", sets: 2, reps: 8, perSide: "côté", note: "bas du dos collé au sol" },
           ],
@@ -301,7 +301,7 @@ const DEFAULT_PROGRAM_P2 = {
           hint: "≈ 9 min. " + P2_PACE_HINT,
           exercises: [
             { id: "h2u1", name: "Pompes", sets: 3, reps: 10 },
-            { id: "h2u2", name: "Rowing inversé sous une table", sets: 3, reps: 8 },
+            { id: "h2u2", name: "Rowing haltères, tempo lent", sets: 3, reps: 12, note: "5 kg, 2 s de montée, 3 s de descente" },
             { id: "h2u3", name: "Planche", sets: 2, duration: 45 },
             { id: "h2u4", name: "Hollow hold, genoux fléchis", sets: 2, duration: 15, note: "bas du dos plaqué au sol" },
           ],
@@ -340,7 +340,7 @@ const DEFAULT_PROGRAM_P2 = {
           hint: "≈ 8 min. " + P2_PACE_HINT,
           exercises: [
             { id: "h3u1", name: "Pompes déclinées (pieds sur une chaise)", sets: 3, reps: 8 },
-            { id: "h3u2", name: "Rowing inversé, corps plus horizontal", sets: 3, reps: 8, note: "plus tu es horizontal, plus c'est dur" },
+            { id: "h3u2", name: "Rowing haltère un bras", sets: 3, reps: 10, perSide: "bras", note: "5 kg, main libre en appui sur une chaise, pause 1 s en haut" },
             { id: "h3u3", name: "Planche avec touche d'épaule alternée", sets: 2, reps: "10 touches", note: "le bassin ne bouge pas" },
             { id: "h3u4", name: "Hollow hold", sets: 2, duration: 20 },
           ],
@@ -569,6 +569,31 @@ function loadProfileData() {
   if (currentProfile === "2" && program.daily.exercises.length === 0) {
     program.daily = structuredClone(DEFAULT_PROGRAM_P2.daily);
     saveProgram();
+  }
+  // Migration P2 : le rowing inversé (table) est remplacé par du rowing
+  // haltères — uniquement s'il n'a pas été personnalisé entre-temps.
+  if (currentProfile === "2") {
+    const replacements = {};
+    for (const block of Object.values(DEFAULT_PROGRAM_P2.blocks)) {
+      for (const day of Object.values(block.days)) {
+        for (const exo of day.exercises) {
+          if (/^Rowing haltère/.test(exo.name)) replacements[exo.id] = exo;
+        }
+      }
+    }
+    let changed = false;
+    for (const block of Object.values(program.blocks || {})) {
+      for (const day of Object.values(block.days || {})) {
+        day.exercises = (day.exercises || []).map((exo) => {
+          if (replacements[exo.id] && /rowing inversé/i.test(exo.name)) {
+            changed = true;
+            return structuredClone(replacements[exo.id]);
+          }
+          return exo;
+        });
+      }
+    }
+    if (changed) saveProgram();
   }
   sessions = loadJSON(profKey(LS_SESSIONS), {});
 }
