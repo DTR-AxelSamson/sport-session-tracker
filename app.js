@@ -32,11 +32,11 @@ const DEFAULT_PROGRAM = {
           hint: PAIR_HINT,
           exercises: [
             { id: "b1a1", name: "A1 · Pont fessier", sets: 3, reps: 12, note: "Expire en montant. Côtes basses, pas de cambrure." },
-            { id: "b1a2", name: "A2 · Rowing élastique", sets: 3, reps: 12, note: "Omoplates vers les poches arrière." },
+            { id: "b1a2", name: "A2 · Bird-dog", sets: 3, reps: 12, note: "En alternance, bras + jambe opposés, dos stable." },
             { id: "b1a3", name: "B1 · Squat (chaise derrière)", sets: 3, reps: 10, note: "Expire en remontant." },
             { id: "b1a4", name: "B2 · Dead bug, jambes pliées 90°", sets: 2, reps: 8, perSide: "côté", note: "Bas du dos collé au sol. Un seul bras + jambe opposée à la fois." },
             { id: "b1a5", name: "C1 · Planche sur les pieds", sets: 3, duration: 30, note: "Bassin légèrement rétroversé, fessiers serrés, tu respires." },
-            { id: "b1a6", name: "C2 · Portés valise (poids d'un seul côté)", sets: 2, reps: "20 m", perSide: "bras", note: "Épaules à niveau, on ne penche pas." },
+            { id: "b1a6", name: "C2 · Marche sur place avec gainage doux", sets: 2, duration: 30, note: "Abdos engagés, épaules basses, sans pencher." },
           ],
         },
         2: {
@@ -50,8 +50,8 @@ const DEFAULT_PROGRAM = {
           title: "Force B",
           hint: PAIR_HINT,
           exercises: [
-            { id: "b1b1", name: "A1 · Charnière de hanche (élastique ou poids)", sets: 3, reps: 10, note: "Dos neutre, fesses vers l'arrière, expire en remontant." },
-            { id: "b1b2", name: "A2 · Pallof press à l'élastique", sets: 2, reps: 10, perSide: "côté", note: "Élastique sur le côté, bras tendus devant sans laisser le tronc tourner — l'anti-rotation de référence pour un diastasis." },
+            { id: "b1b1", name: "A1 · Charnière de hanche au mur", sets: 3, reps: 10, note: "Dos neutre, les fesses reculent jusqu'à toucher le mur, expire en remontant." },
+            { id: "b1b2", name: "A2 · Dead bug avec expiration", sets: 2, reps: 10, perSide: "côté", note: "Expire longuement en descendant bras + jambe opposés, bas du dos collé au sol." },
             { id: "b1b3", name: "B1 · Fente arrière", sets: 2, reps: 8, perSide: "jambe", note: "Sur place, sans charge." },
             { id: "b1b4", name: "B2 · Gainage latéral sur les genoux", sets: 2, duration: 25, perSide: "côté", note: "Hanche haute, épaules alignées." },
             { id: "b1b5", name: "C1 · Bird-dog", sets: 2, reps: 8, perSide: "côté", note: "Pause 2 s en extension." },
@@ -95,11 +95,11 @@ const DEFAULT_PROGRAM = {
           hint: PAIR_HINT,
           exercises: [
             { id: "b2a1", name: "A1 · Pont fessier une jambe", sets: 3, reps: 8, perSide: "jambe", note: "Bassin de niveau, pas de bascule." },
-            { id: "b2a2", name: "A2 · Rowing élastique", sets: 3, reps: 15, note: "Plus de tension." },
+            { id: "b2a2", name: "A2 · Bird-dog", sets: 3, reps: 15, note: "En alternance, plus lent qu'au bloc 1." },
             { id: "b2a3", name: "B1 · Squat avec poids tenu devant", sets: 3, reps: 10 },
             { id: "b2a4", name: "B2 · Dead bug, jambe qui s'allonge davantage", sets: 2, reps: 10, perSide: "côté", note: "Le talon frôle le sol. Tu recules si le dos décolle." },
             { id: "b2a5", name: "C1 · Planche sur les pieds", sets: 3, duration: 45, note: "45–60 s — c'est la cible de ta kiné." },
-            { id: "b2a6", name: "C2 · Portés valise plus lourds", sets: 3, reps: "25 m", perSide: "bras" },
+            { id: "b2a6", name: "C2 · Marche sur place avec gainage doux", sets: 3, duration: 40, note: "Abdos engagés, épaules basses." },
           ],
         },
         2: {
@@ -112,8 +112,8 @@ const DEFAULT_PROGRAM = {
           title: "Force B",
           hint: PAIR_HINT,
           exercises: [
-            { id: "b2b1", name: "A1 · Soulevé de terre roumain, poids", sets: 3, reps: 12, note: "Charge en hausse." },
-            { id: "b2b2", name: "A2 · Pallof press avec un pas de côté", sets: 3, reps: 10, perSide: "côté" },
+            { id: "b2b1", name: "A1 · Good morning au poids du corps", sets: 3, reps: 12, note: "Mains derrière la tête, dos neutre, fesses vers l'arrière." },
+            { id: "b2b2", name: "A2 · Bird-dog avec déplacement contrôlé", sets: 3, reps: 10, perSide: "côté", note: "Avance légèrement main et genou opposés, bassin immobile." },
             { id: "b2b3", name: "B1 · Split squat (pied arrière sur la chaise)", sets: 3, reps: 8, perSide: "jambe" },
             { id: "b2b4", name: "B2 · Gainage latéral sur les pieds", sets: 2, duration: 25, perSide: "côté", note: "Repasse aux genoux si la hanche tombe." },
             { id: "b2b5", name: "C1 · Bird-dog avec pause 3 s", sets: 3, reps: 8, perSide: "côté" },
@@ -155,12 +155,12 @@ const DEFAULT_PROGRAM = {
           title: "Force A",
           hint: PAIR_HINT,
           exercises: [
-            { id: "b3a1", name: "A1 · Hip thrust (épaules sur le canapé), avec poids", sets: 3, reps: 12 },
-            { id: "b3a2", name: "A2 · Rowing élastique un bras", sets: 3, reps: 12, perSide: "bras", note: "Anti-rotation en prime." },
+            { id: "b3a1", name: "A1 · Pont fessier au sol", sets: 3, reps: 12, note: "Expire en montant, pause 2 s en haut." },
+            { id: "b3a2", name: "A2 · Bird-dog avec tirage du coude", sets: 3, reps: 12, perSide: "bras", note: "En position bird-dog, ramène le coude vers la hanche puis tends le bras — anti-rotation en prime." },
             { id: "b3a3", name: "B1 · Squat chargé", sets: 4, reps: 8 },
             { id: "b3a4", name: "B2 · Dead bug complet, jambe tendue", sets: 3, reps: 10, perSide: "côté" },
             { id: "b3a5", name: "C1 · Planche avec touche d'épaule alternée", sets: 3, reps: "10 touches", note: "Le bassin ne bouge pas d'un millimètre. Le vrai test." },
-            { id: "b3a6", name: "C2 · Portés valise lourds", sets: 3, reps: "30 m", perSide: "bras" },
+            { id: "b3a6", name: "C2 · Marche sur place avec gainage doux", sets: 3, duration: 50, note: "Abdos engagés, rythme régulier." },
           ],
         },
         2: {
@@ -173,9 +173,9 @@ const DEFAULT_PROGRAM = {
           title: "Force B",
           hint: PAIR_HINT,
           exercises: [
-            { id: "b3b1", name: "A1 · Soulevé de terre une jambe", sets: 3, reps: 8, perSide: "jambe" },
-            { id: "b3b2", name: "A2 · Pallof press à genoux, en rotation lente", sets: 3, reps: 10, perSide: "côté" },
-            { id: "b3b3", name: "B1 · Fente marchée avec poids", sets: 3, reps: 10, perSide: "jambe" },
+            { id: "b3b1", name: "A1 · Équilibre sur une jambe + charnière de hanche", sets: 3, reps: 8, perSide: "jambe", note: "Penche-toi lentement, dos neutre, reviens à la verticale." },
+            { id: "b3b2", name: "A2 · Dead bug à genoux fléchis", sets: 3, reps: 10, perSide: "côté", note: "Genoux à 90°, bas du dos plaqué, mouvement lent." },
+            { id: "b3b3", name: "B1 · Fente arrière au poids du corps", sets: 3, reps: 10, perSide: "jambe" },
             { id: "b3b4", name: "B2 · Gainage latéral pieds + levée de jambe", sets: 3, reps: 8, perSide: "côté" },
             { id: "b3b5", name: "C1 · Bear crawl (genoux à 2 cm du sol)", sets: 3, duration: 20 },
             { id: "b3b6", name: "C2 · Sauts légers sur place, réception souple", sets: 3, duration: 20, note: "Prépare aux impacts. Aucune fuite tolérée." },
@@ -213,7 +213,7 @@ const DEFAULT_PROGRAM = {
 };
 
 // ---------- Programme par défaut — Profil 2 ----------
-// Renfo 100 % poids du corps (mobilier autorisé : chaise, table — pas de
+// Renfo poids du corps + haltères de 5 kg (mobilier : chaise ok, pas de
 // marche d'escalier), aucun saut ni pliométrie, pas de cardio (course gérée
 // à côté). Genou douloureux : on le RENFORCE progressivement (isométrie →
 // tempo lent → unilatéral), on ne l'évite pas.
@@ -244,7 +244,7 @@ const DEFAULT_PROGRAM_P2 = {
   blocks: {
     "1": {
       name: "Bloc 1 — Reprise (sem. 1–4)",
-      gate: "On renforce le genou, on ne l'évite pas : l'isométrie (chaise au mur) et les descentes lentes chargent le tendon en douceur. Une gêne ≤ 3/10 qui disparaît le lendemain est normale et utile ; au-delà, réduis l'amplitude — pas l'exercice. Tout au poids du corps, sans saut.",
+      gate: "On renforce le genou, on ne l'évite pas : l'isométrie (chaise au mur) et les descentes lentes chargent le tendon en douceur. Une gêne ≤ 3/10 qui disparaît le lendemain est normale et utile ; au-delà, réduis l'amplitude — pas l'exercice. Poids du corps + haltères de 5 kg, sans saut.",
       days: {
         1: {
           title: "Jambes — force",
@@ -262,7 +262,7 @@ const DEFAULT_PROGRAM_P2 = {
           hint: "≈ 8 min. " + P2_PACE_HINT,
           exercises: [
             { id: "h1u1", name: "Pompes (sur les genoux si besoin)", sets: 3, reps: 8, note: "corps gainé, coudes à ~45°" },
-            { id: "h1u2", name: "Rowing inversé sous une table solide", sets: 2, reps: 8, note: "tire les omoplates, corps droit" },
+            { id: "h1u2", name: "Rowing haltères, buste penché", sets: 2, reps: 12, note: "5 kg, buste penché à ~45°, dos neutre — tire vers les poches arrière" },
             { id: "h1u3", name: "Planche", sets: 2, duration: 30 },
             { id: "h1u4", name: "Dead bug", sets: 2, reps: 8, perSide: "côté", note: "bas du dos collé au sol" },
           ],
@@ -301,7 +301,7 @@ const DEFAULT_PROGRAM_P2 = {
           hint: "≈ 9 min. " + P2_PACE_HINT,
           exercises: [
             { id: "h2u1", name: "Pompes", sets: 3, reps: 10 },
-            { id: "h2u2", name: "Rowing inversé sous une table", sets: 3, reps: 8 },
+            { id: "h2u2", name: "Rowing haltères, tempo lent", sets: 3, reps: 12, note: "5 kg, 2 s de montée, 3 s de descente" },
             { id: "h2u3", name: "Planche", sets: 2, duration: 45 },
             { id: "h2u4", name: "Hollow hold, genoux fléchis", sets: 2, duration: 15, note: "bas du dos plaqué au sol" },
           ],
@@ -340,7 +340,7 @@ const DEFAULT_PROGRAM_P2 = {
           hint: "≈ 8 min. " + P2_PACE_HINT,
           exercises: [
             { id: "h3u1", name: "Pompes déclinées (pieds sur une chaise)", sets: 3, reps: 8 },
-            { id: "h3u2", name: "Rowing inversé, corps plus horizontal", sets: 3, reps: 8, note: "plus tu es horizontal, plus c'est dur" },
+            { id: "h3u2", name: "Rowing haltère un bras", sets: 3, reps: 10, perSide: "bras", note: "5 kg, main libre en appui sur une chaise, pause 1 s en haut" },
             { id: "h3u3", name: "Planche avec touche d'épaule alternée", sets: 2, reps: "10 touches", note: "le bassin ne bouge pas" },
             { id: "h3u4", name: "Hollow hold", sets: 2, duration: 20 },
           ],
@@ -556,6 +556,55 @@ let program, sessions;
 
 // Clone profond du défaut : sans ça, éditer le programme mutait DEFAULT_PROGRAM
 // lui-même et « Réinitialiser ce jour » restaurait la version modifiée.
+// Anciens noms par défaut des exercices remplacés, par id. Un exercice stocké
+// n'est migré que si son nom correspond EXACTEMENT à l'ancien défaut : tout
+// renommage utilisateur le protège de la migration.
+const SWAPPED_OLD_NAMES = {
+  "1": {
+    b1a2: "A2 · Rowing élastique",
+    b1a6: "C2 · Portés valise (poids d'un seul côté)",
+    b1b1: "A1 · Charnière de hanche (élastique ou poids)",
+    b1b2: "A2 · Pallof press à l'élastique",
+    b2a2: "A2 · Rowing élastique",
+    b2a6: "C2 · Portés valise plus lourds",
+    b2b1: "A1 · Soulevé de terre roumain, poids",
+    b2b2: "A2 · Pallof press avec un pas de côté",
+    b3a1: "A1 · Hip thrust (épaules sur le canapé), avec poids",
+    b3a2: "A2 · Rowing élastique un bras",
+    b3a6: "C2 · Portés valise lourds",
+    b3b1: "A1 · Soulevé de terre une jambe",
+    b3b2: "A2 · Pallof press à genoux, en rotation lente",
+    b3b3: "B1 · Fente marchée avec poids",
+  },
+  "2": {
+    h1u2: "Rowing inversé sous une table solide",
+    h2u2: "Rowing inversé sous une table",
+    h3u2: "Rowing inversé, corps plus horizontal",
+  },
+};
+
+function migrateSwappedExercises(prog, defaults, oldNames) {
+  const repl = {};
+  for (const block of Object.values(defaults.blocks)) {
+    for (const day of Object.values(block.days)) {
+      for (const exo of day.exercises) repl[exo.id] = exo;
+    }
+  }
+  let changed = false;
+  for (const block of Object.values(prog.blocks || {})) {
+    for (const day of Object.values(block.days || {})) {
+      day.exercises = (day.exercises || []).map((exo) => {
+        if (repl[exo.id] && oldNames[exo.id] === exo.name) {
+          changed = true;
+          return structuredClone(repl[exo.id]);
+        }
+        return exo;
+      });
+    }
+  }
+  return changed;
+}
+
 function loadProfileData() {
   program = loadJSON(profKey(LS_PROGRAM), null) || structuredClone(defaultProgram());
   // Migration : les programmes v2 stockés avant l'ajout de la section
@@ -570,6 +619,10 @@ function loadProfileData() {
     program.daily = structuredClone(DEFAULT_PROGRAM_P2.daily);
     saveProgram();
   }
+  // Migration : certains exercices par défaut ont été remplacés (P1 : exercices
+  // à élastique/poids remplacés par du poids du corps ; P2 : rowing inversé
+  // remplacé par du rowing haltères).
+  if (migrateSwappedExercises(program, defaultProgram(), SWAPPED_OLD_NAMES[currentProfile])) saveProgram();
   sessions = loadJSON(profKey(LS_SESSIONS), {});
 }
 loadProfileData();

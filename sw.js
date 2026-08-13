@@ -1,6 +1,6 @@
 /* Service worker : precache + stale-while-revalidate.
    Incrémenter CACHE_VERSION à chaque déploiement qui modifie les fichiers. */
-const CACHE_VERSION = "sst-v7";
+const CACHE_VERSION = "sst-v9";
 const ASSETS = [
   "./",
   "./index.html",
