@@ -322,6 +322,86 @@ body {
 
 .form-actions { display: flex; gap: 10px; margin-top: 4px; }
 
+/* Historique : calendrier */
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+
+.cal-arrow {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.cal-arrow:disabled { opacity: 0.3; }
+
+.cal-month {
+  flex: 1;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.cal-summary {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 6px 0 12px;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.cal-dow {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 0;
+}
+
+.cal-empty { min-height: 52px; }
+
+.cal-cell {
+  min-height: 52px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px 0;
+  cursor: default;
+  font: inherit;
+}
+
+.cal-cell[data-key] { cursor: pointer; }
+
+.cal-cell .num { font-size: 0.95rem; font-weight: 600; }
+.cal-cell .pct { font-size: 0.68rem; color: var(--muted); min-height: 0.9em; }
+
+.cal-cell[data-key] .pct { color: var(--green); font-weight: 700; }
+
+.cal-cell.today { border-color: var(--accent); border-width: 2px; }
+.cal-cell.future { opacity: 0.35; }
+.cal-cell.full { border-color: #2b4a35; }
+.cal-cell.selected { outline: 2px solid var(--accent); outline-offset: 1px; }
+
 /* Historique */
 .hist-card {
   background: var(--card);

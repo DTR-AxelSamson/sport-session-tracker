@@ -160,6 +160,15 @@ grandes zones tactiles, saisie < 15 s.
       correspond encore à l'ancien défaut, conserve les personnalisations.
       SW `sst-v9`.
 
+- [x] Historique refondu en calendrier mensuel : grille lundi→dimanche, mois
+      courant par défaut, navigation ‹ › (futur bloqué), résumé du mois
+      (n séances · n complètes · moyenne %). Jour avec séance = fond vert
+      d'intensité proportionnelle au %, ✓ à 100 %, aujourd'hui cerclé en bleu,
+      jours futurs estompés. Tap sur un jour → carte détail (titre, x/y, barre,
+      liste ✓/○) sous le calendrier. États : `histYM` (mois affiché),
+      `histSelected` (jour sélectionné). L'ancienne liste est supprimée
+      (`expandedDates` retiré). SW `sst-v10`.
+
 ## À garder en tête
 - Pas de dépendance réseau : tout doit marcher offline une fois chargé.
 - `getDay()` JS : dimanche = 0 (attention au mapping avec le programme).
